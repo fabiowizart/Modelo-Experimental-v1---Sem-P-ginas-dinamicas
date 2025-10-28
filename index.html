@@ -375,6 +375,39 @@
 
       const handleSave = () => {
         onDataChange(localData);
+
+        const newDataString = `const initialData = ${JSON.stringify(localData, null, 2)}`;
+        const scripts = Array.from(document.getElementsByTagName('script'));
+        const babelScript = scripts.find(s => s.type === 'text/babel' && s.innerHTML.includes('const initialData ='));
+
+        if (!babelScript) {
+            alert('Erro: Não foi possível encontrar o script de dados para atualizar.');
+            return;
+        }
+
+        const oldScriptContent = babelScript.innerHTML;
+        const newScriptContent = oldScriptContent.replace(
+            /const initialData = \{[\s\S]*?\};/,
+            newDataString + ';'
+        );
+        
+        let fullHtml = document.documentElement.outerHTML;
+
+        // Replace script content in the full HTML string and clean up React attribute
+        const newFullHtml = fullHtml.replace(oldScriptContent, newScriptContent)
+                                    .replace(' data-reactroot=""', '');
+
+
+        const blob = new Blob([newFullHtml], { type: 'text/html;charset=utf-8' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = 'index.html';
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+        
         setShowNotification(true);
         setTimeout(() => setShowNotification(false), 3000);
       };
@@ -520,23 +553,15 @@
 
             </main>
           </div>
-          <button onClick={handleSave} className="save-button bg-green-600 hover:bg-green-500 text-white font-bold py-3 px-6 rounded-full transition duration-300 shadow-lg flex items-center"><svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2" viewBox="0 0 20 20" fill="currentColor"><path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" /></svg>Salvar Alterações</button>
-          <div className={`notification bg-gray-800 border border-green-500 text-white py-2 px-4 rounded-lg shadow-lg ${showNotification ? '' : 'hidden'}`}>Conteúdo salvo com sucesso!</div>
+          <button onClick={handleSave} className="save-button bg-green-600 hover:bg-green-500 text-white font-bold py-3 px-6 rounded-full transition duration-300 shadow-lg flex items-center"><svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" /></svg>Salvar e Baixar HTML</button>
+          <div className={`notification bg-gray-800 border border-green-500 text-white py-2 px-4 rounded-lg shadow-lg ${showNotification ? '' : 'hidden'}`}>Arquivo index.html baixado com sucesso!</div>
         </div>
       );
     };
 
     // --- APLICAÇÃO PRINCIPAL ---
     const App = () => {
-      const [siteData, setSiteData] = useState(() => {
-        try {
-          const savedData = localStorage.getItem('siteData');
-          return savedData ? JSON.parse(savedData) : initialData;
-        } catch (error) {
-          console.error("Error parsing localStorage data:", error);
-          return initialData;
-        }
-      });
+      const [siteData, setSiteData] = useState(initialData);
       const [route, setRoute] = useState(window.location.hash);
 
       useEffect(() => {
@@ -547,11 +572,6 @@
 
       const handleDataChange = (newData) => {
         setSiteData(newData);
-        try {
-            localStorage.setItem('siteData', JSON.stringify(newData));
-        } catch (error) {
-            console.error("Error saving data to localStorage:", error);
-        }
       };
       
       const { palette } = siteData;
