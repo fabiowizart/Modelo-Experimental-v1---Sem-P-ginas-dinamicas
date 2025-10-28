@@ -7,7 +7,12 @@
   <script src="https://cdn.tailwindcss.com"></script>
   <style>
     html { scroll-behavior: smooth; }
-    body { background-color: #111827; color: #fff; }
+    /* Fallback styles before React loads */
+    body { 
+        background-color: var(--color-bg-dark, #111827); 
+        color: var(--color-text-primary, #fff); 
+        transition: background-color 0.3s ease, color 0.3s ease;
+    }
     /* Estilos para a animação da notificação */
     @keyframes fadeInOut {
       0%, 100% { opacity: 0; transform: translateY(20px); }
@@ -38,6 +43,14 @@
 
     // --- DATA ---
     const initialData = {
+      palette: {
+        primary: '#6366F1',      // Cor principal para botões e ações
+        accent: '#818CF8',       // Cor de destaque para links e ênfase
+        bgDark: '#111827',       // Fundo principal escuro
+        bgLight: '#1F2937',      // Fundo secundário para cards
+        textPrimary: '#FFFFFF',  // Cor principal do texto
+        textSecondary: '#9CA3AF',// Cor secundária do texto
+      },
       hero: {
         titleLine1: 'Transforme Suas Noites.',
         titleLine2: 'Descubra o Universo com Nebula.',
@@ -80,13 +93,13 @@
 
     // --- SITE COMPONENTS ---
     const Header = () => (
-      <header className="fixed top-0 left-0 right-0 z-50 bg-black/30 backdrop-blur-sm">
+      <header className="fixed top-0 left-0 right-0 z-50 bg-[var(--color-bg-dark)]/70 backdrop-blur-sm">
         <div className="container mx-auto px-6 py-4 flex justify-between items-center">
           <div className="flex items-center space-x-2">
-            <StarIcon className="w-8 h-8 text-indigo-400" />
-            <h1 className="text-2xl font-bold text-white tracking-wider">Nebula</h1>
+            <StarIcon className="w-8 h-8 text-[var(--color-accent)]" />
+            <h1 className="text-2xl font-bold text-[var(--color-text-primary)] tracking-wider">Nebula</h1>
           </div>
-          <a href="#comprar" className="bg-indigo-600 hover:bg-indigo-500 text-white font-bold py-2 px-4 rounded-full transition duration-300 transform hover:scale-105 hidden sm:block">Comprar Agora</a>
+          <a href="#comprar" className="bg-[var(--color-primary)] hover:brightness-110 text-[var(--color-text-primary)] font-bold py-2 px-4 rounded-full transition duration-300 transform hover:scale-105 hidden sm:block">Comprar Agora</a>
         </div>
       </header>
     );
@@ -94,36 +107,36 @@
     const Hero = ({ content }) => (
       <section id="attention" className="min-h-screen flex items-center justify-center text-center relative overflow-hidden">
         <div className="absolute inset-0 bg-cover bg-center z-0" style={{ backgroundImage: `url('https://picsum.photos/1920/1080?random=1&blur=5')` }}>
-          <div className="absolute inset-0 bg-gray-900 bg-opacity-60"></div>
+          <div className="absolute inset-0 bg-[var(--color-bg-dark)]/60"></div>
         </div>
         <div className="relative z-10 px-6">
-          <h1 className="text-4xl md:text-6xl lg:text-7xl font-extrabold text-white mb-4 leading-tight tracking-tight">
+          <h1 className="text-4xl md:text-6xl lg:text-7xl font-extrabold text-[var(--color-text-primary)] mb-4 leading-tight tracking-tight">
             {content.titleLine1} <br />
-            <span className="text-indigo-400">{content.titleLine2}</span>
+            <span className="text-[var(--color-accent)]">{content.titleLine2}</span>
           </h1>
-          <p className="text-lg md:text-xl max-w-3xl mx-auto text-gray-300 mb-8">{content.subtitle}</p>
-          <a href="#interest" className="bg-white text-indigo-600 font-bold py-3 px-8 rounded-full text-lg transition duration-300 transform hover:scale-105 inline-block">Descubra a Magia</a>
+          <p className="text-lg md:text-xl max-w-3xl mx-auto text-[var(--color-text-secondary)] mb-8">{content.subtitle}</p>
+          <a href="#interest" className="bg-[var(--color-text-primary)] text-[var(--color-primary)] font-bold py-3 px-8 rounded-full text-lg transition duration-300 transform hover:scale-105 inline-block">Descubra a Magia</a>
         </div>
       </section>
     );
 
     const Features = ({ features }) => {
       const featureIcons = [
-        <StarIcon className="w-12 h-12 text-indigo-400" />,
-        <SoundWaveIcon className="w-12 h-12 text-indigo-400" />,
-        <SmartPhoneIcon className="w-12 h-12 text-indigo-400" />,
+        <StarIcon className="w-12 h-12 text-[var(--color-accent)]" />,
+        <SoundWaveIcon className="w-12 h-12 text-[var(--color-accent)]" />,
+        <SmartPhoneIcon className="w-12 h-12 text-[var(--color-accent)]" />,
       ];
       return (
-        <section id="interest" className="py-20 bg-gray-900">
+        <section id="interest" className="py-20 bg-[var(--color-bg-dark)]">
           <div className="container mx-auto px-6 text-center">
-            <h2 className="text-3xl md:text-4xl font-bold mb-4">Por Que o Nebula é Diferente de Tudo que Você Já Viu?</h2>
-            <p className="text-gray-400 max-w-2xl mx-auto mb-12">Nebula não é apenas um projetor, é uma experiência de bem-estar completa, projetada pela ciência para melhorar seu sono e relaxamento.</p>
+            <h2 className="text-3xl md:text-4xl font-bold mb-4 text-[var(--color-text-primary)]">Por Que o Nebula é Diferente de Tudo que Você Já Viu?</h2>
+            <p className="text-[var(--color-text-secondary)] max-w-2xl mx-auto mb-12">Nebula não é apenas um projetor, é uma experiência de bem-estar completa, projetada pela ciência para melhorar seu sono e relaxamento.</p>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-12">
               {features.map((feature, index) => (
-                <div key={index} className="flex flex-col items-center p-6 bg-gray-800 rounded-lg shadow-lg">
+                <div key={index} className="flex flex-col items-center p-6 bg-[var(--color-bg-light)] rounded-lg shadow-lg">
                   <div className="mb-4">{featureIcons[index] || featureIcons[0]}</div>
-                  <h3 className="text-xl font-semibold mb-2">{feature.title}</h3>
-                  <p className="text-gray-400">{feature.description}</p>
+                  <h3 className="text-xl font-semibold mb-2 text-[var(--color-text-primary)]">{feature.title}</h3>
+                  <p className="text-[var(--color-text-secondary)]">{feature.description}</p>
                 </div>
               ))}
             </div>
@@ -133,20 +146,20 @@
     };
     
     const Solutions = ({ solutions }) => (
-      <section id="solutions" className="py-20 bg-gray-900">
+      <section id="solutions" className="py-20 bg-[var(--color-bg-dark)]">
         <div className="container mx-auto px-6">
           <div className="text-center mb-12">
-            <h2 className="text-3xl md:text-4xl font-bold text-white mb-4">Soluções Para o Seu Bem-Estar</h2>
-            <p className="text-gray-400 max-w-2xl mx-auto">Veja como o Nebula se adapta à sua vida, trazendo mais tranquilidade e momentos inesquecíveis.</p>
+            <h2 className="text-3xl md:text-4xl font-bold text-[var(--color-text-primary)] mb-4">Soluções Para o Seu Bem-Estar</h2>
+            <p className="text-[var(--color-text-secondary)] max-w-2xl mx-auto">Veja como o Nebula se adapta à sua vida, trazendo mais tranquilidade e momentos inesquecíveis.</p>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             {solutions.map((solution, index) => (
-              <div key={index} className="bg-gray-800 rounded-lg shadow-lg overflow-hidden flex flex-col">
+              <div key={index} className="bg-[var(--color-bg-light)] rounded-lg shadow-lg overflow-hidden flex flex-col">
                 <img src={solution.imageUrl} alt={solution.title} className="w-full h-56 object-cover" />
                 <div className="p-6 flex flex-col flex-grow">
-                  <h3 className="text-xl font-semibold text-white mb-2">{solution.title}</h3>
-                  <p className="text-gray-400 mb-4 flex-grow">{solution.description}</p>
-                  <a href="#comprar" className="mt-auto bg-indigo-600 text-white font-bold py-2 px-4 rounded-full text-center hover:bg-indigo-500 transition duration-300 transform hover:scale-105">{solution.buttonText}</a>
+                  <h3 className="text-xl font-semibold text-[var(--color-text-primary)] mb-2">{solution.title}</h3>
+                  <p className="text-[var(--color-text-secondary)] mb-4 flex-grow">{solution.description}</p>
+                  <a href="#comprar" className="mt-auto bg-[var(--color-primary)] text-[var(--color-text-primary)] font-bold py-2 px-4 rounded-full text-center hover:brightness-110 transition duration-300 transform hover:scale-105">{solution.buttonText}</a>
                 </div>
               </div>
             ))}
@@ -156,18 +169,18 @@
     );
 
     const Testimonials = ({ testimonials }) => (
-      <section id="desire" className="py-20 bg-gray-800">
+      <section id="desire" className="py-20 bg-[var(--color-bg-light)]">
         <div className="container mx-auto px-6">
-          <h2 className="text-3xl md:text-4xl font-bold text-center mb-12">Veja o Que Nossos Clientes Estão Sonhando</h2>
+          <h2 className="text-3xl md:text-4xl font-bold text-center mb-12 text-[var(--color-text-primary)]">Veja o Que Nossos Clientes Estão Sonhando</h2>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             {testimonials.map((testimonial, index) => (
-              <div key={index} className="bg-gray-900 p-8 rounded-lg shadow-xl flex flex-col">
-                <p className="text-gray-300 italic mb-6 flex-grow">"{testimonial.quote}"</p>
+              <div key={index} className="bg-[var(--color-bg-dark)] p-8 rounded-lg shadow-xl flex flex-col">
+                <p className="text-[var(--color-text-secondary)] italic mb-6 flex-grow">"{testimonial.quote}"</p>
                 <div className="flex items-center">
                   <img src={testimonial.avatarUrl} alt={testimonial.name} className="w-12 h-12 rounded-full mr-4 object-cover" />
                   <div>
-                    <h4 className="font-semibold text-white">{testimonial.name}</h4>
-                    <p className="text-indigo-400 text-sm">{testimonial.role}</p>
+                    <h4 className="font-semibold text-[var(--color-text-primary)]">{testimonial.name}</h4>
+                    <p className="text-[var(--color-accent)] text-sm">{testimonial.role}</p>
                   </div>
                 </div>
               </div>
@@ -181,20 +194,20 @@
       const [openIndex, setOpenIndex] = useState(null);
       const handleClick = index => setOpenIndex(openIndex === index ? null : index);
       return (
-        <section id="faq" className="py-20 bg-gray-800">
+        <section id="faq" className="py-20 bg-[var(--color-bg-light)]">
           <div className="container mx-auto px-6 max-w-3xl">
-            <h2 className="text-3xl md:text-4xl font-bold text-center text-white mb-10">Perguntas Frequentes</h2>
-            <div className="bg-gray-900 rounded-lg shadow-xl px-6">
+            <h2 className="text-3xl md:text-4xl font-bold text-center text-[var(--color-text-primary)] mb-10">Perguntas Frequentes</h2>
+            <div className="bg-[var(--color-bg-dark)] rounded-lg shadow-xl px-6">
               {faqData.map((item, index) => (
                 <div className="border-b border-gray-700" key={index}>
                   <button onClick={() => handleClick(index)} className="w-full text-left py-6 flex justify-between items-center focus:outline-none" aria-expanded={openIndex === index}>
-                    <h3 className="text-lg font-medium text-white">{item.question}</h3>
-                    <span className="text-indigo-400 transform transition-transform duration-300">
+                    <h3 className="text-lg font-medium text-[var(--color-text-primary)]">{item.question}</h3>
+                    <span className="text-[var(--color-accent)] transform transition-transform duration-300">
                       <svg xmlns="http://www.w3.org/2000/svg" className={`w-6 h-6 transition-transform duration-300 ${openIndex === index ? 'rotate-180' : 'rotate-0'}`} fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" /></svg>
                     </span>
                   </button>
                   <div className={`overflow-hidden transition-max-height duration-500 ease-in-out ${openIndex === index ? 'max-h-96' : 'max-h-0'}`}>
-                    <p className="pb-6 pr-4 text-gray-400">{item.answer}</p>
+                    <p className="pb-6 pr-4 text-[var(--color-text-secondary)]">{item.answer}</p>
                   </div>
                 </div>
               ))}
@@ -204,17 +217,17 @@
       );
     };
 
-    const CTA = ({ content }) => (
-      <section id="comprar" className="py-20 bg-gray-900">
+    const CTA = ({ content, palette }) => (
+      <section id="comprar" className="py-20 bg-[var(--color-bg-dark)]">
         <div className="container mx-auto px-6">
-          <div className="bg-gradient-to-r from-indigo-700 to-purple-800 rounded-lg shadow-2xl p-8 md:p-12 flex flex-col-reverse md:flex-row items-center">
+          <div className="rounded-lg shadow-2xl p-8 md:p-12 flex flex-col-reverse md:flex-row items-center" style={{background: `linear-gradient(to right, ${palette.primary}, ${palette.accent})`}}>
             <div className="md:w-1/2 text-center md:text-left mt-8 md:mt-0">
-              <h2 className="text-3xl md:text-4xl font-extrabold text-white mb-4">{content.title}</h2>
-              <p className="text-indigo-200 mb-6">{content.subtitle}</p>
-              <div className="text-4xl font-bold text-white mb-6">
+              <h2 className="text-3xl md:text-4xl font-extrabold text-[var(--color-text-primary)] mb-4">{content.title}</h2>
+              <p className="text-[var(--color-text-primary)] opacity-80 mb-6">{content.subtitle}</p>
+              <div className="text-4xl font-bold text-[var(--color-text-primary)] mb-6">
                 <span className="text-lg opacity-70 line-through mr-2">{content.originalPrice}</span>{content.discountedPrice}
               </div>
-              <a href="#" className="bg-white text-indigo-600 font-bold py-4 px-10 rounded-full text-lg transition duration-300 transform hover:scale-105 inline-block shadow-lg">{content.buttonText}</a>
+              <a href="#" className="bg-[var(--color-text-primary)] text-[var(--color-primary)] font-bold py-4 px-10 rounded-full text-lg transition duration-300 transform hover:scale-105 inline-block shadow-lg">{content.buttonText}</a>
             </div>
             <div className="md:w-1/2 flex justify-center">
               <img src="https://picsum.photos/400/400?random=5" alt="Nebula Product" className="rounded-lg shadow-xl" />
@@ -229,48 +242,48 @@
         const InstagramIcon = () => (<svg className="w-6 h-6" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path fillRule="evenodd" d="M12.315 2c2.43 0 2.784.013 3.808.06 1.064.049 1.791.218 2.427.465a4.902 4.902 0 011.772 1.153 4.902 4.902 0 011.153 1.772c.247.636.416 1.363.465 2.427.048 1.024.06 1.378.06 3.808s-.012 2.784-.06 3.808c-.049 1.064-.218 1.791-.465 2.427a4.902 4.902 0 01-1.153 1.772 4.902 4.902 0 01-1.772 1.153c-.636.247-1.363.416-2.427.465-1.024.048-1.378.06-3.808.06s-2.784-.012-3.808-.06c-1.064-.049-1.791-.218-2.427-.465a4.902 4.902 0 01-1.772-1.153 4.902 4.902 0 01-1.153-1.772c-.247-.636-.416-1.363-.465-2.427-.048-1.024-.06-1.378-.06-3.808s.012-2.784.06-3.808c.049 1.064.218 1.791.465 2.427a4.902 4.902 0 011.153-1.772A4.902 4.902 0 016.08 2.525c.636-.247 1.363-.416 2.427-.465C9.53 2.013 9.884 2 12.315 2zM12 7.167a4.833 4.833 0 100 9.666 4.833 4.833 0 000-9.666zM12 15a3 3 0 110-6 3 3 0 010 6zm4.833-8.167a1.167 1.167 0 100-2.334 1.167 1.167 0 000 2.334z" clipRule="evenodd" /></svg>);
         const TwitterIcon = () => (<svg className="w-6 h-6" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path d="M8.29 20.251c7.547 0 11.675-6.253 11.675-11.675 0-.178 0-.355-.012-.53A8.348 8.348 0 0022 5.92a8.19 8.19 0 01-2.357.646 4.118 4.118 0 001.804-2.27 8.224 8.224 0 01-2.605.996 4.107 4.107 0 00-6.993 3.743 11.65 11.65 0 01-8.457-4.287 4.106 4.106 0 001.27 5.477A4.072 4.072 0 012.8 9.71v.052a4.105 4.105 0 003.292 4.022 4.095 4.095 0 01-1.853.07 4.108 4.108 0 003.834 2.85A8.233 8.233 0 012 18.407a11.616 11.616 0 006.29 1.84" /></svg>);
       return (
-        <footer className="bg-gray-800 text-gray-400">
+        <footer className="bg-[var(--color-bg-light)] text-[var(--color-text-secondary)]">
             <div className="container mx-auto px-6 py-12">
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-8 text-center md:text-left">
                     <div className="md:col-span-1">
                         <div className="flex items-center justify-center md:justify-start space-x-2 mb-4">
-                            <StarIcon className="w-8 h-8 text-indigo-400" />
-                            <h1 className="text-2xl font-bold text-white tracking-wider">Nebula Inc.</h1>
+                            <StarIcon className="w-8 h-8 text-[var(--color-accent)]" />
+                            <h1 className="text-2xl font-bold text-[var(--color-text-primary)] tracking-wider">Nebula Inc.</h1>
                         </div>
                         <p className="text-sm">Uma experiência celestial, criada para você.</p>
                     </div>
                     <div className="md:col-span-1">
-                        <h3 className="text-white font-semibold tracking-wider mb-4 uppercase">Contato</h3>
+                        <h3 className="text-[var(--color-text-primary)] font-semibold tracking-wider mb-4 uppercase">Contato</h3>
                         <ul className="space-y-3 text-sm">
                             <li className="flex items-start justify-center md:justify-start">
-                                <span className="mt-1 mr-2 h-5 w-5 text-indigo-400 flex-shrink-0"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-5 h-5"><path strokeLinecap="round" strokeLinejoin="round" d="M15 10.5a3 3 0 11-6 0 3 3 0 016 0z" /><path strokeLinecap="round" strokeLinejoin="round" d="M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1115 0z" /></svg></span>
+                                <span className="mt-1 mr-2 h-5 w-5 text-[var(--color-accent)] flex-shrink-0"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-5 h-5"><path strokeLinecap="round" strokeLinejoin="round" d="M15 10.5a3 3 0 11-6 0 3 3 0 016 0z" /><path strokeLinecap="round" strokeLinejoin="round" d="M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1115 0z" /></svg></span>
                                 <span>Rua das Estrelas, 123<br />Cosmos, SP - 01234-567</span>
                             </li>
                             <li className="flex items-center justify-center md:justify-start">
-                                <span className="mr-2 h-5 w-5 text-indigo-400 flex-shrink-0"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-5 h-5"><path strokeLinecap="round" strokeLinejoin="round" d="M2.25 6.75c0 8.284 6.716 15 15 15h2.25a2.25 2.25 0 002.25-2.25v-1.372c0-.516-.351-.966-.852-1.091l-4.423-1.106c-.44-.11-.902.055-1.173.417l-.97 1.293c-.282.376-.769.542-1.21.38a12.035 12.035 0 01-7.143-7.143c-.162-.441.004-.928.38-1.21l1.293-.97c.363-.271.527-.734.417-1.173L6.963 3.102a1.125 1.125 0 00-1.091-.852H4.5A2.25 2.25 0 002.25 4.5v2.25z" /></svg></span>
-                                <a href="tel:+5511912345678" className="hover:text-white transition-colors">(11) 91234-5678</a>
+                                <span className="mr-2 h-5 w-5 text-[var(--color-accent)] flex-shrink-0"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-5 h-5"><path strokeLinecap="round" strokeLinejoin="round" d="M2.25 6.75c0 8.284 6.716 15 15 15h2.25a2.25 2.25 0 002.25-2.25v-1.372c0-.516-.351-.966-.852-1.091l-4.423-1.106c-.44-.11-.902.055-1.173.417l-.97 1.293c-.282.376-.769.542-1.21.38a12.035 12.035 0 01-7.143-7.143c-.162-.441.004-.928.38-1.21l1.293-.97c.363-.271.527-.734.417-1.173L6.963 3.102a1.125 1.125 0 00-1.091-.852H4.5A2.25 2.25 0 002.25 4.5v2.25z" /></svg></span>
+                                <a href="tel:+5511912345678" className="hover:text-[var(--color-text-primary)] transition-colors">(11) 91234-5678</a>
                             </li>
                             <li className="flex items-center justify-center md:justify-start">
-                                <span className="mr-2 h-5 w-5 text-indigo-400 flex-shrink-0"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-5 h-5"><path strokeLinecap="round" strokeLinejoin="round" d="M21.75 6.75v10.5a2.25 2.25 0 01-2.25-2.25h-15a2.25 2.25 0 01-2.25-2.25V6.75m19.5 0A2.25 2.25 0 0019.5 4.5h-15a2.25 2.25 0 00-2.25 2.25m19.5 0v.243a2.25 2.25 0 01-1.07 1.916l-7.5 4.615a2.25 2.25 0 01-2.36 0L3.32 8.91a2.25 2.25 0 01-1.07-1.916V6.75" /></svg></span>
-                                <a href="mailto:contato@nebula.inc" className="hover:text-white transition-colors">contato@nebula.inc</a>
+                                <span className="mr-2 h-5 w-5 text-[var(--color-accent)] flex-shrink-0"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-5 h-5"><path strokeLinecap="round" strokeLinejoin="round" d="M21.75 6.75v10.5a2.25 2.25 0 01-2.25-2.25h-15a2.25 2.25 0 01-2.25-2.25V6.75m19.5 0A2.25 2.25 0 0019.5 4.5h-15a2.25 2.25 0 00-2.25 2.25m19.5 0v.243a2.25 2.25 0 01-1.07 1.916l-7.5 4.615a2.25 2.25 0 01-2.36 0L3.32 8.91a2.25 2.25 0 01-1.07-1.916V6.75" /></svg></span>
+                                <a href="mailto:contato@nebula.inc" className="hover:text-[var(--color-text-primary)] transition-colors">contato@nebula.inc</a>
                             </li>
                         </ul>
                     </div>
                     <div className="md:col-span-1">
-                        <h3 className="text-white font-semibold tracking-wider mb-4 uppercase">Siga-nos</h3>
+                        <h3 className="text-[var(--color-text-primary)] font-semibold tracking-wider mb-4 uppercase">Siga-nos</h3>
                         <div className="flex space-x-4 justify-center md:justify-start">
-                            <a href="#" className="text-gray-400 hover:text-white transition-colors" aria-label="Facebook"><FacebookIcon /></a>
-                            <a href="#" className="text-gray-400 hover:text-white transition-colors" aria-label="Instagram"><InstagramIcon /></a>
-                            <a href="#" className="text-gray-400 hover:text-white transition-colors" aria-label="Twitter"><TwitterIcon /></a>
+                            <a href="#" className="text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)] transition-colors" aria-label="Facebook"><FacebookIcon /></a>
+                            <a href="#" className="text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)] transition-colors" aria-label="Instagram"><InstagramIcon /></a>
+                            <a href="#" className="text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)] transition-colors" aria-label="Twitter"><TwitterIcon /></a>
                         </div>
                     </div>
                 </div>
                 <div className="mt-12 border-t border-gray-700 pt-6 text-center text-sm">
                     <p>&copy; {new Date().getFullYear()} Nebula Inc. Todos os direitos reservados.</p>
                     <div className="mt-4 space-x-4 text-xs">
-                        <a href="#" className="hover:text-white transition-colors">Privacidade e Cookies</a>
+                        <a href="#" className="hover:text-[var(--color-text-primary)] transition-colors">Privacidade e Cookies</a>
                         <span className="text-gray-600">|</span>
-                        <a href="#/admin" className="hover:text-white transition-colors">Gerenciar</a>
+                        <a href="#/admin" className="hover:text-[var(--color-text-primary)] transition-colors">Gerenciar</a>
                     </div>
                 </div>
             </div>
@@ -298,6 +311,13 @@
           ),
         }));
       };
+      
+      const handlePaletteChange = (key, value) => {
+        setLocalData(prev => ({
+          ...prev,
+          palette: { ...prev.palette, [key]: value },
+        }));
+      };
 
       const handleSave = () => {
         setData(localData);
@@ -306,6 +326,14 @@
       };
       
       const formInputClass = "w-full bg-gray-700 border border-gray-600 rounded-md py-2 px-3 text-white focus:outline-none focus:ring-2 focus:ring-indigo-500";
+      const paletteLabels = {
+        primary: "Primária",
+        accent: "Destaque",
+        bgDark: "Fundo Escuro",
+        bgLight: "Fundo Claro",
+        textPrimary: "Texto Principal",
+        textSecondary: "Texto Secundário",
+      };
 
       return (
         <div className="bg-gray-900 min-h-screen text-white p-4 sm:p-8">
@@ -313,11 +341,25 @@
             <header className="flex flex-col sm:flex-row justify-between items-center mb-8">
               <div>
                 <h1 className="text-3xl sm:text-4xl font-bold mb-2">Painel de Gerenciamento</h1>
-                <p className="text-gray-400">Edite o conteúdo do site aqui.</p>
+                <p className="text-gray-400">Edite o conteúdo e as cores do site aqui.</p>
               </div>
               <a href="/#" className="mt-4 sm:mt-0 bg-indigo-600 hover:bg-indigo-500 text-white font-bold py-2 px-4 rounded-full transition duration-300">Voltar ao Site</a>
             </header>
             <main className="space-y-12 pb-24">
+              <fieldset className="border border-gray-700 p-6 rounded-lg"><legend className="text-xl font-semibold px-2 text-indigo-400">Paleta de Cores</legend>
+                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
+                  {Object.entries(localData.palette).map(([key, value]) => (
+                    <div key={key}>
+                      <label className="block text-sm font-medium text-gray-400 mb-1 capitalize">{paletteLabels[key] || key}</label>
+                      <div className="flex items-center space-x-2">
+                        <input type="color" value={value} onChange={(e) => handlePaletteChange(key, e.target.value)} className="w-10 h-10 p-0 bg-gray-700 border-none rounded-md cursor-pointer"/>
+                        <input type="text" value={value} onChange={(e) => handlePaletteChange(key, e.target.value)} className={formInputClass + " font-mono uppercase"} />
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </fieldset>
+            
               <fieldset className="border border-gray-700 p-6 rounded-lg"><legend className="text-xl font-semibold px-2 text-indigo-400">Seção Hero</legend><div className="space-y-4">
                   <div><label className="block text-sm font-medium text-gray-400 mb-1">Título (Linha 1)</label><input type="text" value={localData.hero.titleLine1} onChange={(e) => handleInputChange('hero', 'titleLine1', e.target.value)} className={formInputClass} /></div>
                   <div><label className="block text-sm font-medium text-gray-400 mb-1">Título (Linha 2)</label><input type="text" value={localData.hero.titleLine2} onChange={(e) => handleInputChange('hero', 'titleLine2', e.target.value)} className={formInputClass} /></div>
@@ -367,13 +409,44 @@
       );
     };
 
+    // --- Dynamic Style Component ---
+    const StyleInjector = ({ palette }) => {
+      const css = `
+        :root {
+          --color-primary: ${palette.primary};
+          --color-accent: ${palette.accent};
+          --color-bg-dark: ${palette.bgDark};
+          --color-bg-light: ${palette.bgLight};
+          --color-text-primary: ${palette.textPrimary};
+          --color-text-secondary: ${palette.textSecondary};
+        }
+      `;
+      useEffect(() => {
+        let styleElement = document.getElementById('dynamic-palette-styles');
+        if (!styleElement) {
+          styleElement = document.createElement('style');
+          styleElement.id = 'dynamic-palette-styles';
+          document.head.appendChild(styleElement);
+        }
+        styleElement.innerHTML = css;
+      }, [css]);
+
+      return null;
+    };
+
 
     // --- MAIN APP ---
     const App = () => {
       const [siteData, setSiteData] = useState(() => {
         try {
           const savedData = localStorage.getItem('nebulaSiteData');
-          return savedData ? JSON.parse(savedData) : initialData;
+          // Deep merge to ensure new properties like 'palette' are added if not present
+          const parsedData = savedData ? JSON.parse(savedData) : {};
+          return {
+              ...initialData,
+              ...parsedData,
+              palette: { ...initialData.palette, ...(parsedData.palette || {}) },
+          };
         } catch (error) {
           console.error("Failed to parse localStorage data:", error);
           return initialData;
@@ -409,6 +482,7 @@
 
       return (
         <Fragment>
+          <StyleInjector palette={siteData.palette} />
           <Header />
           <main>
             <Hero content={siteData.hero} />
@@ -416,7 +490,7 @@
             <Solutions solutions={siteData.solutions} />
             <Testimonials testimonials={siteData.testimonials} />
             <FAQ faqData={siteData.faq} />
-            <CTA content={siteData.cta} />
+            <CTA content={siteData.cta} palette={siteData.palette}/>
           </main>
           <Footer />
         </Fragment>
