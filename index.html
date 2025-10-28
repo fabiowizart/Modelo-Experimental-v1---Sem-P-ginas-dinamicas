@@ -77,72 +77,137 @@
     const { useState, useEffect, useMemo, useCallback, Fragment } = React;
 
     // --- DADOS INICIAIS E TIPOS ---
+    // START_DATA
     const initialData = {
-      companyInfo: {
-        name: 'Nebula',
-        logoUrl: 'data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIGNsYXNzPSJ3LTggaC04IHRleHRbdmFyKC0tY29sb3ItYWNjZW50KV0iIGZpbGw9Im5vbmUiIHZpZXdCb3g9IjAgMCAyNCAyNCIgc3Ryb2tlPSJjdXJyZW50Q29sb3IiPjxwYXRoIHN0cm9rZUxpbmVjYXA9InJvdW5kIiBzdHJva2VMaW5lam9pbj0icm91bmQiIHN0cm9rZVdpZHRoPSIyIiBkPSJNNSAzbjRNMyA1aDRNNiAxN3Y0bS0yLTJoNG01LTE2bDIuMjg2IDYuODU3TDIxIDEybC01LjcxNCAyLjE0M0wxMyAyMWwtMi4yODYtNi44NTdMNSAxMmw1LjcxNC0yLjE0M0wxMyAzWiIgLz48L3N2Zz4=',
-        tagline: 'Uma experiência celestial, criada para você.'
+      "companyInfo": {
+        "name": "Nebula",
+        "logoUrl": "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIGNsYXNzPSJ3LTggaC04IHRleHRbdmFyKC0tY29sb3ItYWNjZW50KV0iIGZpbGw9Im5vbmUiIHZpZXdCb3g9IjAgMCAyNCAyNCIgc3Ryb2tlPSJjdXJyZW50Q29sb3IiPjxwYXRoIHN0cm9rZUxpbmVjYXA9InJvdW5kIiBzdHJva2VMaW5lam9pbj0icm91bmQiIHN0cm9rZVdpZHRoPSIyIiBkPSJNNSAzbjRNMyA1aDRNNiAxN3Y0bS0yLTJoNG01LTE2bDIuMjg2IDYuODU3TDIxIDEybC01LjcxNCAyLjE0M0wxMyAyMWwtMi4yODYtNi44NTdMNSAxMmw1LjcxNC0yLjE0M0wxMyAzWiIgLz48L3N2Zz4=",
+        "tagline": "Uma experiência celestial, criada para você."
       },
-      menuItems: [
-        { text: 'Funcionalidades', link: '#interest' },
-        { text: 'Soluções', link: '#solutions' },
-        { text: 'Depoimentos', link: '#desire' },
-        { text: 'Comprar Agora', link: '#comprar' },
+      "menuItems": [
+        {
+          "text": "Funcionalidades",
+          "link": "#interest"
+        },
+        {
+          "text": "Soluções",
+          "link": "#solutions"
+        },
+        {
+          "text": "Depoimentos",
+          "link": "#desire"
+        },
+        {
+          "text": "Comprar Agora",
+          "link": "#comprar"
+        }
       ],
-      palette: {
-        primary: '#6366f1',
-        accent: '#818cf8',
-        backgroundDark: '#111827',
-        backgroundLight: '#1f2937',
-        textPrimary: '#ffffff',
-        textSecondary: '#9ca3af',
+      "palette": {
+        "primary": "#6366f1",
+        "accent": "#818cf8",
+        "backgroundDark": "#111827",
+        "backgroundLight": "#1f2937",
+        "textPrimary": "#ffffff",
+        "textSecondary": "#9ca3af"
       },
-      hero: {
-        titleLine1: 'Transforme Suas Noites.',
-        titleLine2: 'Descubra o Universo com Nebula.',
-        subtitle: 'Adormeça sob um céu estrelado personalizado, ao som de paisagens sonoras relaxantes, e desperte sentindo-se completamente renovado.',
-        videoUrl: 'https://www.youtube.com/watch?v=LXb3EKWsInQ',
-        showVideo: true,
+      "hero": {
+        "titleLine1": "Transforme Suas Noites.",
+        "titleLine2": "Descubra o Universo com Nebula.",
+        "subtitle": "Adormeça sob um céu estrelado personalizado, ao som de paisagens sonoras relaxantes, e desperte sentindo-se completamente renovado.",
+        "videoUrl": "https://www.youtube.com/watch?v=LXb3EKWsInQ",
+        "showVideo": true
       },
-      footerInfo: {
-        address: 'Rua das Estrelas, 123\nCosmos, SP - 01234-567',
-        phone: '(11) 91234-5678',
-        email: 'contato@nebula.inc',
-        social: {
-          facebook: '#',
-          instagram: '#',
-          twitter: '#',
+      "footerInfo": {
+        "address": "Rua das Estrelas, 123\nCosmos, SP - 01234-567",
+        "phone": "(11) 91234-5678",
+        "email": "contato@nebula.inc",
+        "social": {
+          "facebook": "#",
+          "instagram": "#",
+          "twitter": "#"
         }
       },
-      features: [
-        { title: 'Projeções Hiper-realistas', description: 'Nossa tecnologia patenteada mapeia constelações reais e nebulosas vibrantes, criando uma experiência imersiva única no seu teto.' },
-        { title: 'Paisagens Sonoras com IA', description: 'Sincronizado com a projeção, o Nebula gera sons ambientes relaxantes que se adaptam ao seu ritmo de sono para uma noite perfeita.' },
-        { title: 'Controle Inteligente', description: 'Use nosso aplicativo para escolher seu céu noturno, programar sessões de relaxamento e integrar com sua casa inteligente.' },
+      "features": [
+        {
+          "title": "Projeções Hiper-realistas",
+          "description": "Nossa tecnologia patenteada mapeia constelações reais e nebulosas vibrantes, criando uma experiência imersiva única no seu teto."
+        },
+        {
+          "title": "Paisagens Sonoras com IA",
+          "description": "Sincronizado com a projeção, o Nebula gera sons ambientes relaxantes que se adaptam ao seu ritmo de sono para uma noite perfeita."
+        },
+        {
+          "title": "Controle Inteligente",
+          "description": "Use nosso aplicativo para escolher seu céu noturno, programar sessões de relaxamento e integrar com sua casa inteligente."
+        }
       ],
-      solutions: [
-        { imageUrl: 'https://picsum.photos/600/400?random=6', title: 'Sono Profundo e Restaurador', description: 'Crie o ambiente perfeito para adormecer. As projeções calmantes e os sons adaptativos reduzem a ansiedade e promovem um sono mais profundo e reparador.', buttonText: 'Melhore seu Sono' },
-        { imageUrl: 'https://picsum.photos/600/400?random=7', title: 'Foco para Meditação e Yoga', description: 'Transforme qualquer cômodo em um santuário de paz. Use o Nebula para criar um cenário imersivo que aprofunda sua concentração e relaxamento durante a meditação.', buttonText: 'Encontre sua Paz' },
-        { imageUrl: 'https://picsum.photos/600/400?random=8', title: 'Noites Mágicas para Crianças', description: 'Estimule a imaginação dos seus filhos e acalme o medo do escuro. Uma galáxia no teto torna a hora de dormir uma aventura divertida e tranquila.', buttonText: 'Encante Seus Filhos' },
+      "solutions": [
+        {
+          "imageUrl": "https://picsum.photos/600/400?random=6",
+          "title": "Sono Profundo e Restaurador",
+          "description": "Crie o ambiente perfeito para adormecer. As projeções calmantes e os sons adaptativos reduzem a ansiedade e promovem um sono mais profundo e reparador.",
+          "buttonText": "Melhore seu Sono"
+        },
+        {
+          "imageUrl": "https://picsum.photos/600/400?random=7",
+          "title": "Foco para Meditação e Yoga",
+          "description": "Transforme qualquer cômodo em um santuário de paz. Use o Nebula para criar um cenário imersivo que aprofunda sua concentração e relaxamento durante a meditação.",
+          "buttonText": "Encontre sua Paz"
+        },
+        {
+          "imageUrl": "https://picsum.photos/600/400?random=8",
+          "title": "Noites Mágicas para Crianças",
+          "description": "Estimule a imaginação dos seus filhos e acalme o medo do escuro. Uma galáxia no teto torna a hora de dormir uma aventura divertida e tranquila.",
+          "buttonText": "Encante Seus Filhos"
+        }
       ],
-      testimonials: [
-        { name: 'Ana S.', role: 'Designer de Interiores', quote: 'O Nebula mudou completamente minha rotina de sono. Nunca me senti tão relaxada e inspirada ao acordar. É a peça central do meu quarto.', avatarUrl: 'https://picsum.photos/100/100?random=2' },
-        { name: 'Marcos P.', role: 'Desenvolvedor de Software', quote: 'É como ter um pedaço do universo no meu quarto. Me ajuda a desligar depois de um dia longo de codificação. Meus filhos também adoram!', avatarUrl: 'https://picsum.photos/100/100?random=3' },
-        { name: 'Juliana F.', role: 'Professora de Yoga', quote: 'Uso o Nebula durante minhas sessões de meditação em casa. A combinação das luzes e sons é simplesmente mágica. Recomendo a todos os meus alunos.', avatarUrl: 'https://picsum.photos/100/100?random=4' },
+      "testimonials": [
+        {
+          "name": "Ana S.",
+          "role": "Designer de Interiores",
+          "quote": "O Nebula mudou completamente minha rotina de sono. Nunca me senti tão relaxada e inspirada ao acordar. É a peça central do meu quarto.",
+          "avatarUrl": "https://picsum.photos/100/100?random=2"
+        },
+        {
+          "name": "Marcos P.",
+          "role": "Desenvolvedor de Software",
+          "quote": "É como ter um pedaço do universo no meu quarto. Me ajuda a desligar depois de um dia longo de codificação. Meus filhos também adoram!",
+          "avatarUrl": "https://picsum.photos/100/100?random=3"
+        },
+        {
+          "name": "Juliana F.",
+          "role": "Professora de Yoga",
+          "quote": "Uso o Nebula durante minhas sessões de meditação em casa. A combinação das luzes e sons é simplesmente mágica. Recomendo a todos os meus alunos.",
+          "avatarUrl": "https://picsum.photos/100/100?random=4"
+        }
       ],
-      faq: [
-        { question: 'Qual a diferença do Nebula para outros projetores de estrelas?', answer: 'O Nebula utiliza projeção a laser de alta definição para mapear constelações reais e é o único com um sistema de som inteligente que se adapta ao seu ambiente e ritmo de sono para uma imersão completa.' },
-        { question: 'A instalação é complicada?', answer: 'Não! Basta ligar o Nebula na tomada, conectá-lo ao Wi-Fi através do nosso aplicativo intuitivo e ele está pronto para usar. Leva menos de 5 minutos.' },
-        { question: 'Posso usar minhas próprias músicas ou playlists?', answer: 'Sim! O Nebula funciona como uma caixa de som Bluetooth de alta qualidade. Você pode conectar seu celular e ouvir suas músicas, podcasts ou audiolivros favoritos sob as estrelas.' },
-        { question: 'Qual a política de garantia e devolução?', answer: 'Oferecemos uma garantia de 1 ano contra defeitos de fabricação e uma política de devolução sem perguntas de 30 dias. Se você não amar seu Nebula, nós devolvemos o seu dinheiro.' },
+      "faq": [
+        {
+          "question": "Qual a diferença do Nebula para outros projetores de estrelas?",
+          "answer": "O Nebula utiliza projeção a laser de alta definição para mapear constelações reais e é o único com um sistema de som inteligente que se adapta ao seu ambiente e ritmo de sono para uma imersão completa."
+        },
+        {
+          "question": "A instalação é complicada?",
+          "answer": "Não! Basta ligar o Nebula na tomada, conectá-lo ao Wi-Fi através do nosso aplicativo intuitivo e ele está pronto para usar. Leva menos de 5 minutos."
+        },
+        {
+          "question": "Posso usar minhas próprias músicas ou playlists?",
+          "answer": "Sim! O Nebula funciona como uma caixa de som Bluetooth de alta qualidade. Você pode conectar seu celular e ouvir suas músicas, podcasts ou audiolivros favoritos sob as estrelas."
+        },
+        {
+          "question": "Qual a política de garantia e devolução?",
+          "answer": "Oferecemos uma garantia de 1 ano contra defeitos de fabricação e uma política de devolução sem perguntas de 30 dias. Se você não amar seu Nebula, nós devolvemos o seu dinheiro."
+        }
       ],
-      cta: {
-        title: 'Pronto Para Viajar Pelas Estrelas?',
-        subtitle: 'Receba seu Nebula em casa com frete grátis e transforme seu quarto no seu santuário pessoal. Garantia de 30 dias para devolução.',
-        originalPrice: 'R$ 1.199,00',
-        discountedPrice: 'R$ 899,00',
-        buttonText: 'Comprar Agora e Garantir o Seu',
-      },
+      "cta": {
+        "title": "Pronto Para Viajar Pelas Estrelas?",
+        "subtitle": "Receba seu Nebula em casa com frete grátis e transforme seu quarto no seu santuário pessoal. Garantia de 30 dias para devolução.",
+        "originalPrice": "R$ 1.199,00",
+        "discountedPrice": "R$ 899,00",
+        "buttonText": "Comprar Agora e Garantir o Seu"
+      }
     };
+    // END_DATA
 
     // --- ÍCONES ---
     const StarIcon = ({ className }) => (<svg xmlns="http://www.w3.org/2000/svg" className={className} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z" /></svg>);
@@ -185,11 +250,11 @@
       const embedUrl = getYouTubeEmbedUrl(content.videoUrl);
 
       return (
-        <section id="attention" className="min-h-screen flex items-center justify-center text-center relative overflow-hidden">
+        <section id="attention" className="min-h-screen flex items-center justify-center text-center relative overflow-hidden pt-20">
           <div className="absolute inset-0 bg-cover bg-center z-0" style={{ backgroundImage: `url('https://picsum.photos/1920/1080?random=1&blur=5')` }}><div className="absolute inset-0 bg-gray-900 bg-opacity-60"></div></div>
-          <div className="relative z-10 px-6 max-w-4xl mx-auto pt-28">
+          <div className="relative z-10 px-6 max-w-4xl mx-auto">
             {content.showVideo && embedUrl && (
-              <div className="max-w-3xl mx-auto">
+              <div className="max-w-2xl mx-auto">
                 <div className="youtube-player-container rounded-lg shadow-2xl">
                   <iframe
                     src={embedUrl}
@@ -365,6 +430,7 @@
     const AdminDashboard = ({ data, onDataChange }) => {
       const [localData, setLocalData] = useState(data);
       const [showNotification, setShowNotification] = useState(false);
+      const [notificationMessage, setNotificationMessage] = useState('');
       const [openSections, setOpenSections] = useState({});
 
       useEffect(() => { setLocalData(data); }, [data]);
@@ -374,9 +440,38 @@
       };
 
       const handleSave = () => {
-        onDataChange(localData);
-        setShowNotification(true);
-        setTimeout(() => setShowNotification(false), 3000);
+          // 1. Atualiza o estado da aplicação para a visualização ao vivo
+          onDataChange(localData);
+
+          // 2. Prepara o novo bloco de dados para injeção no HTML
+          const newInitialDataString = JSON.stringify(localData, null, 2);
+          const newDataBlock = `// START_DATA\nconst initialData = ${newInitialDataString};\n// END_DATA`;
+
+          // 3. Pega o HTML atual da página
+          const pageHtml = document.documentElement.outerHTML;
+          
+          // 4. Usa uma expressão regular para substituir o bloco de dados antigo pelo novo
+          const dataBlockRegex = /\/\/\s*START_DATA[\s\S]*?\/\/\s*END_DATA/;
+          if (!dataBlockRegex.test(pageHtml)) {
+              alert("Erro crítico: Marcadores de dados não encontrados. Não é possível gerar o arquivo.");
+              return;
+          }
+          const newHtml = pageHtml.replace(dataBlockRegex, newDataBlock);
+
+          // 5. Cria um "blob" (um objeto de arquivo) e dispara o download
+          const blob = new Blob([newHtml], { type: 'text/html' });
+          const link = document.createElement('a');
+          link.href = URL.createObjectURL(blob);
+          link.download = 'index.html';
+          document.body.appendChild(link);
+          link.click();
+          document.body.removeChild(link);
+          URL.revokeObjectURL(link.href);
+
+          // 6. Exibe uma notificação com instruções
+          setNotificationMessage('index.html gerado! Publique este arquivo no seu servidor.');
+          setShowNotification(true);
+          setTimeout(() => setShowNotification(false), 5000);
       };
 
       const handleInputChange = (section, field, value) => {
@@ -520,23 +615,15 @@
 
             </main>
           </div>
-          <button onClick={handleSave} className="save-button bg-green-600 hover:bg-green-500 text-white font-bold py-3 px-6 rounded-full transition duration-300 shadow-lg flex items-center"><svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2" viewBox="0 0 20 20" fill="currentColor"><path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" /></svg>Salvar Alterações</button>
-          <div className={`notification bg-gray-800 border border-green-500 text-white py-2 px-4 rounded-lg shadow-lg ${showNotification ? '' : 'hidden'}`}>Conteúdo salvo com sucesso!</div>
+          <button onClick={handleSave} className="save-button bg-green-600 hover:bg-green-500 text-white font-bold py-3 px-6 rounded-full transition duration-300 shadow-lg flex items-center"><svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2" viewBox="0 0 20 20" fill="currentColor"><path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" /></svg>Salvar e Baixar</button>
+          <div className={`notification bg-gray-800 border border-green-500 text-white py-2 px-4 rounded-lg shadow-lg ${showNotification ? '' : 'hidden'}`}>{notificationMessage}</div>
         </div>
       );
     };
 
     // --- APLICAÇÃO PRINCIPAL ---
     const App = () => {
-      const [siteData, setSiteData] = useState(() => {
-        try {
-          const savedData = localStorage.getItem('siteData');
-          return savedData ? JSON.parse(savedData) : initialData;
-        } catch (error) {
-          console.error("Error parsing localStorage data:", error);
-          return initialData;
-        }
-      });
+      const [siteData, setSiteData] = useState(initialData);
       const [route, setRoute] = useState(window.location.hash);
 
       useEffect(() => {
@@ -544,15 +631,6 @@
         window.addEventListener('hashchange', handleHashChange);
         return () => window.removeEventListener('hashchange', handleHashChange);
       }, []);
-
-      const handleDataChange = (newData) => {
-        setSiteData(newData);
-        try {
-            localStorage.setItem('siteData', JSON.stringify(newData));
-        } catch (error) {
-            console.error("Error saving data to localStorage:", error);
-        }
-      };
       
       const { palette } = siteData;
       const dynamicStyles = `
@@ -567,7 +645,7 @@
         <Fragment>
           <style>{dynamicStyles}</style>
           {route === '#/admin' ? (
-            <AdminDashboard data={siteData} onDataChange={handleDataChange} />
+            <AdminDashboard data={siteData} onDataChange={setSiteData} />
           ) : (
             <Fragment>
               <Header companyInfo={siteData.companyInfo} menuItems={siteData.menuItems} />
