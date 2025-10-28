@@ -44,6 +44,22 @@
         padding-bottom: 0 !important;
         margin-top: 0 !important;
     }
+    .youtube-player-container {
+        position: relative;
+        width: 100%;
+        padding-bottom: 56.25%; /* 16:9 aspect ratio */
+        height: 0;
+        overflow: hidden;
+        margin-bottom: 2rem;
+    }
+    .youtube-player-container iframe {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        border: 0;
+    }
   </style>
 <script type="importmap">
 {
@@ -62,6 +78,17 @@
 
     // --- DADOS INICIAIS E TIPOS ---
     const initialData = {
+      companyInfo: {
+        name: 'Nebula',
+        logoUrl: 'data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIGNsYXNzPSJ3LTggaC04IHRleHRbdmFyKC0tY29sb3ItYWNjZW50KV0iIGZpbGw9Im5vbmUiIHZpZXdCb3g9IjAgMCAyNCAyNCIgc3Ryb2tlPSJjdXJyZW50Q29sb3IiPjxwYXRoIHN0cm9rZUxpbmVjYXA9InJvdW5kIiBzdHJva2VMaW5lam9pbj0icm91bmQiIHN0cm9rZVdpZHRoPSIyIiBkPSJNNSAzbjRNMyA1aDRNNiAxN3Y0bS0yLTJoNG01LTE2bDIuMjg2IDYuODU3TDIxIDEybC01LjcxNCAyLjE0M0wxMyAyMWwtMi4yODYtNi44NTdMNSAxMmw1LjcxNC0yLjE0M0wxMyAzWiIgLz48L3N2Zz4=',
+        tagline: 'Uma experiência celestial, criada para você.'
+      },
+      menuItems: [
+        { text: 'Funcionalidades', link: '#interest' },
+        { text: 'Soluções', link: '#solutions' },
+        { text: 'Depoimentos', link: '#desire' },
+        { text: 'Comprar Agora', link: '#comprar' },
+      ],
       palette: {
         primary: '#6366f1',
         accent: '#818cf8',
@@ -74,6 +101,18 @@
         titleLine1: 'Transforme Suas Noites.',
         titleLine2: 'Descubra o Universo com Nebula.',
         subtitle: 'Adormeça sob um céu estrelado personalizado, ao som de paisagens sonoras relaxantes, e desperte sentindo-se completamente renovado.',
+        videoUrl: 'https://www.youtube.com/watch?v=LXb3EKWsInQ',
+        showVideo: true,
+      },
+      footerInfo: {
+        address: 'Rua das Estrelas, 123\nCosmos, SP - 01234-567',
+        phone: '(11) 91234-5678',
+        email: 'contato@nebula.inc',
+        social: {
+          facebook: '#',
+          instagram: '#',
+          twitter: '#',
+        }
       },
       features: [
         { title: 'Projeções Hiper-realistas', description: 'Nossa tecnologia patenteada mapeia constelações reais e nebulosas vibrantes, criando uma experiência imersiva única no seu teto.' },
@@ -115,28 +154,60 @@
     const ChevronIcon = ({className}) => (<svg xmlns="http://www.w3.org/2000/svg" className={className} fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" /></svg>);
 
     // --- COMPONENTES DA PÁGINA ---
-    const Header = () => (
+    const Header = ({ companyInfo, menuItems }) => (
       <header className="fixed top-0 left-0 right-0 z-50 bg-black/30 backdrop-blur-sm">
         <div className="container mx-auto px-6 py-4 flex justify-between items-center">
-          <div className="flex items-center space-x-2">
-            <svg className="w-8 h-8 text-[var(--color-accent)]" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z" /></svg>
-            <h1 className="text-2xl font-bold text-[var(--color-text-primary)] tracking-wider">Nebula</h1>
-          </div>
-          <a href="#comprar" className="bg-[var(--color-primary)] hover:opacity-90 text-[var(--color-text-primary)] font-bold py-2 px-4 rounded-full transition duration-300 transform hover:scale-105 hidden sm:block">Comprar Agora</a>
+          <a href="/#" className="flex items-center space-x-2">
+            <img src={companyInfo.logoUrl} alt={`${companyInfo.name} Logo`} className="w-8 h-8"/>
+            <h1 className="text-2xl font-bold text-[var(--color-text-primary)] tracking-wider">{companyInfo.name}</h1>
+          </a>
+          <nav className="hidden sm:flex items-center space-x-6">
+            {menuItems.map((item, index) => (
+              <a key={index} href={item.link} className="text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)] transition duration-300">{item.text}</a>
+            ))}
+          </nav>
         </div>
       </header>
     );
 
-    const Hero = ({ content }) => (
-      <section id="attention" className="min-h-screen flex items-center justify-center text-center relative overflow-hidden">
-        <div className="absolute inset-0 bg-cover bg-center z-0" style={{ backgroundImage: `url('https://picsum.photos/1920/1080?random=1&blur=5')` }}><div className="absolute inset-0 bg-gray-900 bg-opacity-60"></div></div>
-        <div className="relative z-10 px-6">
-          <h1 className="text-4xl md:text-6xl lg:text-7xl font-extrabold text-[var(--color-text-primary)] mb-4 leading-tight tracking-tight">{content.titleLine1} <br /> <span className="text-[var(--color-accent)]">{content.titleLine2}</span></h1>
-          <p className="text-lg md:text-xl max-w-3xl mx-auto text-gray-300 mb-8">{content.subtitle}</p>
-          <a href="#interest" className="bg-white text-[var(--color-primary)] font-bold py-3 px-8 rounded-full text-lg transition duration-300 transform hover:scale-105 inline-block">Descubra a Magia</a>
-        </div>
-      </section>
-    );
+    const Hero = ({ content }) => {
+      const getYouTubeEmbedUrl = (url) => {
+        if (!url) return null;
+        let videoId = '';
+        const youtubeRegex = /^(?:https?:\/\/)?(?:www\.)?(?:youtube\.com\/(?:[^\/\n\s]+\/\S+\/|(?:v|e(?:mbed)?)\/|\S*?[?&]v=)|youtu\.be\/)([a-zA-Z0-9_-]{11})/;
+        const match = url.match(youtubeRegex);
+        if (match && match[1]) {
+          videoId = match[1];
+        }
+        return videoId ? `https://www.youtube.com/embed/${videoId}?autoplay=1&mute=1&loop=1&playlist=${videoId}&controls=0` : null;
+      };
+
+      const embedUrl = getYouTubeEmbedUrl(content.videoUrl);
+
+      return (
+        <section id="attention" className="min-h-screen flex items-center justify-center text-center relative overflow-hidden">
+          <div className="absolute inset-0 bg-cover bg-center z-0" style={{ backgroundImage: `url('https://picsum.photos/1920/1080?random=1&blur=5')` }}><div className="absolute inset-0 bg-gray-900 bg-opacity-60"></div></div>
+          <div className="relative z-10 px-6 max-w-4xl mx-auto pt-28">
+            {content.showVideo && embedUrl && (
+              <div className="max-w-3xl mx-auto">
+                <div className="youtube-player-container rounded-lg shadow-2xl">
+                  <iframe
+                    src={embedUrl}
+                    title="YouTube video player"
+                    frameBorder="0"
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                    allowFullScreen
+                  ></iframe>
+                </div>
+              </div>
+            )}
+            <h1 className="text-4xl md:text-6xl lg:text-7xl font-extrabold text-[var(--color-text-primary)] mb-4 leading-tight tracking-tight">{content.titleLine1} <br /> <span className="text-[var(--color-accent)]">{content.titleLine2}</span></h1>
+            <p className="text-lg md:text-xl max-w-3xl mx-auto text-gray-300 mb-8">{content.subtitle}</p>
+            <a href="#interest" className="bg-white text-[var(--color-primary)] font-bold py-3 px-8 rounded-full text-lg transition duration-300 transform hover:scale-105 inline-block">Descubra a Magia</a>
+          </div>
+        </section>
+      );
+    };
     
     const Features = ({ features }) => {
         const featureIcons = [<StarIcon className="w-12 h-12 text-[var(--color-accent)]" />, <SoundWaveIcon className="w-12 h-12 text-[var(--color-accent)]" />, <SmartPhoneIcon className="w-12 h-12 text-[var(--color-accent)]" />];
@@ -242,45 +313,45 @@
       </section>
     );
 
-    const Footer = () => (
+    const Footer = ({ companyInfo, footerInfo }) => (
       <footer className="bg-[var(--color-background-light)] text-[var(--color-text-secondary)]">
         <div className="container mx-auto px-6 py-12">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8 text-center md:text-left">
             <div>
               <div className="flex items-center justify-center md:justify-start space-x-2 mb-4">
-                <svg className="w-8 h-8 text-[var(--color-accent)]" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z" /></svg>
-                <h1 className="text-2xl font-bold text-white tracking-wider">Nebula Inc.</h1>
+                <img src={companyInfo.logoUrl} alt={`${companyInfo.name} Logo`} className="w-8 h-8"/>
+                <h1 className="text-2xl font-bold text-white tracking-wider">{companyInfo.name}</h1>
               </div>
-              <p className="text-sm">Uma experiência celestial, criada para você.</p>
+              <p className="text-sm">{companyInfo.tagline}</p>
             </div>
             <div>
               <h3 className="text-white font-semibold tracking-wider mb-4 uppercase">Contato</h3>
               <ul className="space-y-3 text-sm">
                 <li className="flex items-start justify-center md:justify-start">
                     <span className="mt-1 mr-2 h-5 w-5 text-[var(--color-accent)] flex-shrink-0"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-5 h-5"><path strokeLinecap="round" strokeLinejoin="round" d="M15 10.5a3 3 0 11-6 0 3 3 0 016 0z" /><path strokeLinecap="round" strokeLinejoin="round" d="M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1115 0z" /></svg></span>
-                    <span>Rua das Estrelas, 123<br/>Cosmos, SP - 01234-567</span>
+                    <span style={{whiteSpace: 'pre-wrap'}}>{footerInfo.address}</span>
                 </li>
                 <li className="flex items-center justify-center md:justify-start">
                     <span className="mr-2 h-5 w-5 text-[var(--color-accent)] flex-shrink-0"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-5 h-5"><path strokeLinecap="round" strokeLinejoin="round" d="M2.25 6.75c0 8.284 6.716 15 15 15h2.25a2.25 2.25 0 002.25-2.25v-1.372c0-.516-.351-.966-.852-1.091l-4.423-1.106c-.44-.11-.902.055-1.173.417l-.97 1.293c-.282.376-.769.542-1.21.38a12.035 12.035 0 01-7.143-7.143c-.162-.441.004-.928.38-1.21l1.293-.97c.363-.271.527-.734.417-1.173L6.963 3.102a1.125 1.125 0 00-1.091-.852H4.5A2.25 2.25 0 002.25 4.5v2.25z" /></svg></span>
-                    <a href="tel:+5511912345678" className="hover:text-white transition-colors">(11) 91234-5678</a>
+                    <a href={`tel:${footerInfo.phone}`} className="hover:text-white transition-colors">{footerInfo.phone}</a>
                 </li>
                 <li className="flex items-center justify-center md:justify-start">
                     <span className="mr-2 h-5 w-5 text-[var(--color-accent)] flex-shrink-0"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-5 h-5"><path strokeLinecap="round" strokeLinejoin="round" d="M21.75 6.75v10.5a2.25 2.25 0 01-2.25-2.25h-15a2.25 2.25 0 01-2.25-2.25V6.75m19.5 0A2.25 2.25 0 0019.5 4.5h-15a2.25 2.25 0 00-2.25 2.25m19.5 0v.243a2.25 2.25 0 01-1.07 1.916l-7.5 4.615a2.25 2.25 0 01-2.36 0L3.32 8.91a2.25 2.25 0 01-1.07-1.916V6.75" /></svg></span>
-                    <a href="mailto:contato@nebula.inc" className="hover:text-white transition-colors">contato@nebula.inc</a>
+                    <a href={`mailto:${footerInfo.email}`} className="hover:text-white transition-colors">{footerInfo.email}</a>
                 </li>
               </ul>
             </div>
             <div>
               <h3 className="text-white font-semibold tracking-wider mb-4 uppercase">Siga-nos</h3>
               <div className="flex space-x-4 justify-center md:justify-start">
-                <a href="#" className="hover:text-white transition-colors"><FacebookIcon /></a>
-                <a href="#" className="hover:text-white transition-colors"><InstagramIcon /></a>
-                <a href="#" className="hover:text-white transition-colors"><TwitterIcon /></a>
+                <a href={footerInfo.social.facebook} className="hover:text-white transition-colors"><FacebookIcon /></a>
+                <a href={footerInfo.social.instagram} className="hover:text-white transition-colors"><InstagramIcon /></a>
+                <a href={footerInfo.social.twitter} className="hover:text-white transition-colors"><TwitterIcon /></a>
               </div>
             </div>
           </div>
           <div className="mt-12 border-t border-gray-700 pt-6 text-center text-sm">
-            <p>&copy; {new Date().getFullYear()} Nebula Inc. Todos os direitos reservados.</p>
+            <p>&copy; {new Date().getFullYear()} {companyInfo.name}. Todos os direitos reservados.</p>
             <div className="mt-4 space-x-4 text-xs">
               <a href="#" className="hover:text-white transition-colors">Privacidade e Cookies</a><span className="text-gray-600">|</span>
               <a href="#/admin" className="hover:text-white transition-colors">Gerenciar</a>
@@ -294,16 +365,9 @@
     const AdminDashboard = ({ data, onDataChange }) => {
       const [localData, setLocalData] = useState(data);
       const [showNotification, setShowNotification] = useState(false);
-      const [openSections, setOpenSections] = useState({
-        palette: true,
-        hero: true,
-        testimonials: true,
-        faq: true
-      });
+      const [openSections, setOpenSections] = useState({});
 
-      useEffect(() => {
-        setLocalData(data);
-      }, [data]);
+      useEffect(() => { setLocalData(data); }, [data]);
 
       const toggleSection = (section) => {
         setOpenSections(prev => ({ ...prev, [section]: !prev[section] }));
@@ -319,8 +383,20 @@
         setLocalData(prev => ({ ...prev, [section]: { ...prev[section], [field]: value } }));
       };
       
+      const handleNestedInputChange = (section, nested, field, value) => {
+        setLocalData(prev => ({ ...prev, [section]: { ...prev[section], [nested]: { ...prev[section][nested], [field]: value }}}));
+      };
+      
       const handleListItemChange = (section, index, field, value) => {
         setLocalData(prev => ({ ...prev, [section]: prev[section].map((item, i) => i === index ? { ...item, [field]: value } : item) }));
+      };
+      
+      const handleRemoveItem = (section, index) => {
+          setLocalData(prev => ({ ...prev, [section]: prev[section].filter((_, i) => i !== index) }));
+      };
+      
+      const handleAddItem = (section, newItem) => {
+          setLocalData(prev => ({ ...prev, [section]: [...prev[section], newItem] }));
       };
 
       const handlePaletteChange = (name, value) => {
@@ -335,7 +411,7 @@
                     <ChevronIcon className={`w-5 h-5 transition-transform text-gray-400 ${openSections[sectionKey] ? 'rotate-180' : ''}`} />
                 </div>
             </legend>
-            <div className={`collapsible-content pt-4 ${!openSections[sectionKey] ? 'collapsed' : ''}`} style={{maxHeight: openSections[sectionKey] ? '2000px' : '0'}}>
+            <div className={`collapsible-content pt-4 ${!openSections[sectionKey] ? 'collapsed' : ''}`} style={{maxHeight: openSections[sectionKey] ? '5000px' : '0'}}>
                 {children}
             </div>
         </fieldset>
@@ -349,6 +425,27 @@
               <a href="/#" className="mt-4 sm:mt-0 bg-indigo-600 hover:bg-indigo-500 text-white font-bold py-2 px-4 rounded-full transition duration-300">Voltar ao Site</a>
             </header>
             <main className="space-y-12">
+              
+              <CollapsibleSection title="Informações da Empresa" sectionKey="companyInfo">
+                <div className="space-y-4">
+                  <label className="block text-sm font-medium text-gray-400 mb-1">Nome da Empresa</label>
+                  <input type="text" value={localData.companyInfo.name} onChange={e => handleInputChange('companyInfo', 'name', e.target.value)} className="w-full bg-gray-700 border border-gray-600 rounded-md py-2 px-3"/>
+                  <label className="block text-sm font-medium text-gray-400 mb-1">URL do Logotipo</label>
+                  <input type="text" value={localData.companyInfo.logoUrl} onChange={e => handleInputChange('companyInfo', 'logoUrl', e.target.value)} className="w-full bg-gray-700 border border-gray-600 rounded-md py-2 px-3"/>
+                </div>
+              </CollapsibleSection>
+
+              <CollapsibleSection title="Menu do Cabeçalho" sectionKey="menuItems">
+                {localData.menuItems.map((item, index) => (
+                  <div key={index} className="flex items-end gap-4 border-b border-gray-800 pb-4 mb-4">
+                    <div className="flex-grow"><label className="block text-sm font-medium text-gray-400">Texto</label><input type="text" value={item.text} onChange={e => handleListItemChange('menuItems', index, 'text', e.target.value)} className="w-full bg-gray-700 border-gray-600 rounded-md p-2"/></div>
+                    <div className="flex-grow"><label className="block text-sm font-medium text-gray-400">Link</label><input type="text" value={item.link} onChange={e => handleListItemChange('menuItems', index, 'link', e.target.value)} className="w-full bg-gray-700 border-gray-600 rounded-md p-2"/></div>
+                    <button onClick={() => handleRemoveItem('menuItems', index)} className="bg-red-600 hover:bg-red-500 text-white font-bold py-2 px-3 rounded-md">&times;</button>
+                  </div>
+                ))}
+                <button onClick={() => handleAddItem('menuItems', {text: 'Novo Item', link: '#'})} className="mt-4 bg-blue-600 hover:bg-blue-500 text-white font-bold py-2 px-4 rounded-md">Adicionar Item</button>
+              </CollapsibleSection>
+
               <CollapsibleSection title="Paleta de Cores" sectionKey="palette">
                 <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
                   {Object.entries(localData.palette).map(([name, value]) => (
@@ -366,35 +463,61 @@
               <CollapsibleSection title="Seção Hero" sectionKey="hero">
                 <div className="space-y-4">
                   <label className="block text-sm font-medium text-gray-400 mb-1">Título (Linha 1)</label>
-                  <input type="text" value={localData.hero.titleLine1} onChange={e => handleInputChange('hero', 'titleLine1', e.target.value)} className="w-full bg-gray-700 border border-gray-600 rounded-md py-2 px-3 text-white focus:outline-none focus:ring-2 focus:ring-indigo-500"/>
+                  <input type="text" value={localData.hero.titleLine1} onChange={e => handleInputChange('hero', 'titleLine1', e.target.value)} className="w-full bg-gray-700 border border-gray-600 rounded-md py-2 px-3"/>
                   <label className="block text-sm font-medium text-gray-400 mb-1">Título (Linha 2)</label>
-                  <input type="text" value={localData.hero.titleLine2} onChange={e => handleInputChange('hero', 'titleLine2', e.target.value)} className="w-full bg-gray-700 border border-gray-600 rounded-md py-2 px-3 text-white focus:outline-none focus:ring-2 focus:ring-indigo-500"/>
+                  <input type="text" value={localData.hero.titleLine2} onChange={e => handleInputChange('hero', 'titleLine2', e.target.value)} className="w-full bg-gray-700 border border-gray-600 rounded-md py-2 px-3"/>
                   <label className="block text-sm font-medium text-gray-400 mb-1">Subtítulo</label>
-                  <textarea value={localData.hero.subtitle} onChange={e => handleInputChange('hero', 'subtitle', e.target.value)} rows="3" className="w-full bg-gray-700 border border-gray-600 rounded-md py-2 px-3 text-white focus:outline-none focus:ring-2 focus:ring-indigo-500"/>
+                  <textarea value={localData.hero.subtitle} onChange={e => handleInputChange('hero', 'subtitle', e.target.value)} rows="3" className="w-full bg-gray-700 border border-gray-600 rounded-md py-2 px-3"/>
+                  <label className="block text-sm font-medium text-gray-400 mb-1">URL do Vídeo (YouTube)</label>
+                  <input type="text" value={localData.hero.videoUrl} onChange={e => handleInputChange('hero', 'videoUrl', e.target.value)} className="w-full bg-gray-700 border border-gray-600 rounded-md py-2 px-3"/>
+                  <label className="flex items-center cursor-pointer"><input type="checkbox" checked={localData.hero.showVideo} onChange={e => handleInputChange('hero', 'showVideo', e.target.checked)} className="form-checkbox h-5 w-5 text-indigo-600 bg-gray-700 border-gray-600 rounded focus:ring-indigo-500"/><span className="ml-2 text-gray-300">Exibir vídeo na seção Hero</span></label>
                 </div>
               </CollapsibleSection>
               
               <CollapsibleSection title="Seção de Depoimentos" sectionKey="testimonials">
                 {localData.testimonials.map((item, index) => (
-                  <div key={index} className="space-y-4 border-b border-gray-800 pb-6 mb-6 last:border-b-0 last:mb-0 last:pb-0">
-                    <h3 className="text-lg font-medium text-gray-300">Depoimento {index + 1}</h3>
-                    <input type="text" placeholder="Nome" value={item.name} onChange={e => handleListItemChange('testimonials', index, 'name', e.target.value)} className="w-full bg-gray-700 border border-gray-600 rounded-md py-2 px-3 text-white focus:outline-none focus:ring-2 focus:ring-indigo-500"/>
-                    <input type="text" placeholder="Cargo" value={item.role} onChange={e => handleListItemChange('testimonials', index, 'role', e.target.value)} className="w-full bg-gray-700 border border-gray-600 rounded-md py-2 px-3 text-white focus:outline-none focus:ring-2 focus:ring-indigo-500"/>
-                    <textarea placeholder="Citação" value={item.quote} onChange={e => handleListItemChange('testimonials', index, 'quote', e.target.value)} rows="3" className="w-full bg-gray-700 border border-gray-600 rounded-md py-2 px-3 text-white focus:outline-none focus:ring-2 focus:ring-indigo-500"/>
-                    <input type="text" placeholder="URL do Avatar" value={item.avatarUrl} onChange={e => handleListItemChange('testimonials', index, 'avatarUrl', e.target.value)} className="w-full bg-gray-700 border border-gray-600 rounded-md py-2 px-3 text-white focus:outline-none focus:ring-2 focus:ring-indigo-500"/>
+                  <div key={index} className="space-y-4 border-b border-gray-800 pb-6 mb-6">
+                    <div className="flex justify-between items-center"><h3 className="text-lg font-medium text-gray-300">Depoimento {index + 1}</h3><button onClick={() => handleRemoveItem('testimonials', index)} className="bg-red-600 hover:bg-red-500 text-white font-bold py-1 px-3 rounded-md">&times;</button></div>
+                    <input type="text" placeholder="Nome" value={item.name} onChange={e => handleListItemChange('testimonials', index, 'name', e.target.value)} className="w-full bg-gray-700 p-2 rounded-md"/>
+                    <input type="text" placeholder="Cargo" value={item.role} onChange={e => handleListItemChange('testimonials', index, 'role', e.target.value)} className="w-full bg-gray-700 p-2 rounded-md"/>
+                    <textarea placeholder="Citação" value={item.quote} onChange={e => handleListItemChange('testimonials', index, 'quote', e.target.value)} rows="3" className="w-full bg-gray-700 p-2 rounded-md"/>
+                    <input type="text" placeholder="URL do Avatar" value={item.avatarUrl} onChange={e => handleListItemChange('testimonials', index, 'avatarUrl', e.target.value)} className="w-full bg-gray-700 p-2 rounded-md"/>
                   </div>
                 ))}
+                 <button onClick={() => handleAddItem('testimonials', {name: '', role: '', quote: '', avatarUrl: ''})} className="mt-4 bg-blue-600 hover:bg-blue-500 text-white font-bold py-2 px-4 rounded-md">Adicionar Depoimento</button>
               </CollapsibleSection>
               
               <CollapsibleSection title="Seção de FAQ" sectionKey="faq">
                 {localData.faq.map((item, index) => (
-                  <div key={index} className="space-y-4 border-b border-gray-800 pb-6 mb-6 last:border-b-0 last:mb-0 last:pb-0">
-                    <h3 className="text-lg font-medium text-gray-300">Pergunta {index + 1}</h3>
-                    <input type="text" placeholder="Pergunta" value={item.question} onChange={e => handleListItemChange('faq', index, 'question', e.target.value)} className="w-full bg-gray-700 border border-gray-600 rounded-md py-2 px-3 text-white focus:outline-none focus:ring-2 focus:ring-indigo-500"/>
-                    <textarea placeholder="Resposta" value={item.answer} onChange={e => handleListItemChange('faq', index, 'answer', e.target.value)} rows="3" className="w-full bg-gray-700 border border-gray-600 rounded-md py-2 px-3 text-white focus:outline-none focus:ring-2 focus:ring-indigo-500"/>
+                  <div key={index} className="space-y-4 border-b border-gray-800 pb-6 mb-6">
+                     <div className="flex justify-between items-center"><h3 className="text-lg font-medium text-gray-300">Pergunta {index + 1}</h3><button onClick={() => handleRemoveItem('faq', index)} className="bg-red-600 hover:bg-red-500 text-white font-bold py-1 px-3 rounded-md">&times;</button></div>
+                    <input type="text" placeholder="Pergunta" value={item.question} onChange={e => handleListItemChange('faq', index, 'question', e.target.value)} className="w-full bg-gray-700 p-2 rounded-md"/>
+                    <textarea placeholder="Resposta" value={item.answer} onChange={e => handleListItemChange('faq', index, 'answer', e.target.value)} rows="3" className="w-full bg-gray-700 p-2 rounded-md"/>
                   </div>
                 ))}
+                <button onClick={() => handleAddItem('faq', {question: '', answer: ''})} className="mt-4 bg-blue-600 hover:bg-blue-500 text-white font-bold py-2 px-4 rounded-md">Adicionar Pergunta</button>
               </CollapsibleSection>
+
+              <CollapsibleSection title="Rodapé" sectionKey="footerInfo">
+                <div className="space-y-4">
+                    <label className="block text-sm font-medium text-gray-400 mb-1">Slogan</label>
+                    <input type="text" value={localData.companyInfo.tagline} onChange={e => handleInputChange('companyInfo', 'tagline', e.target.value)} className="w-full bg-gray-700 border border-gray-600 rounded-md py-2 px-3"/>
+                    <label className="block text-sm font-medium text-gray-400 mb-1">Endereço</label>
+                    <textarea value={localData.footerInfo.address} onChange={e => handleInputChange('footerInfo', 'address', e.target.value)} rows="3" className="w-full bg-gray-700 border border-gray-600 rounded-md py-2 px-3"/>
+                    <label className="block text-sm font-medium text-gray-400 mb-1">Telefone</label>
+                    <input type="text" value={localData.footerInfo.phone} onChange={e => handleInputChange('footerInfo', 'phone', e.target.value)} className="w-full bg-gray-700 border border-gray-600 rounded-md py-2 px-3"/>
+                    <label className="block text-sm font-medium text-gray-400 mb-1">E-mail</label>
+                    <input type="email" value={localData.footerInfo.email} onChange={e => handleInputChange('footerInfo', 'email', e.target.value)} className="w-full bg-gray-700 border border-gray-600 rounded-md py-2 px-3"/>
+                    <h3 className="text-lg font-medium text-gray-300 pt-4">Redes Sociais</h3>
+                    <label className="block text-sm font-medium text-gray-400 mb-1">Facebook URL</label>
+                    <input type="text" value={localData.footerInfo.social.facebook} onChange={e => handleNestedInputChange('footerInfo', 'social', 'facebook', e.target.value)} className="w-full bg-gray-700 border border-gray-600 rounded-md py-2 px-3"/>
+                    <label className="block text-sm font-medium text-gray-400 mb-1">Instagram URL</label>
+                    <input type="text" value={localData.footerInfo.social.instagram} onChange={e => handleNestedInputChange('footerInfo', 'social', 'instagram', e.target.value)} className="w-full bg-gray-700 border border-gray-600 rounded-md py-2 px-3"/>
+                    <label className="block text-sm font-medium text-gray-400 mb-1">Twitter URL</label>
+                    <input type="text" value={localData.footerInfo.social.twitter} onChange={e => handleNestedInputChange('footerInfo', 'social', 'twitter', e.target.value)} className="w-full bg-gray-700 border border-gray-600 rounded-md py-2 px-3"/>
+                </div>
+              </CollapsibleSection>
+
             </main>
           </div>
           <button onClick={handleSave} className="save-button bg-green-600 hover:bg-green-500 text-white font-bold py-3 px-6 rounded-full transition duration-300 shadow-lg flex items-center"><svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2" viewBox="0 0 20 20" fill="currentColor"><path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" /></svg>Salvar Alterações</button>
@@ -447,7 +570,7 @@
             <AdminDashboard data={siteData} onDataChange={handleDataChange} />
           ) : (
             <Fragment>
-              <Header />
+              <Header companyInfo={siteData.companyInfo} menuItems={siteData.menuItems} />
               <main>
                 <Hero content={siteData.hero} />
                 <Features features={siteData.features} />
@@ -456,7 +579,7 @@
                 <FAQ faqData={siteData.faq} />
                 <CTA content={siteData.cta} />
               </main>
-              <Footer />
+              <Footer companyInfo={siteData.companyInfo} footerInfo={siteData.footerInfo} />
             </Fragment>
           )}
         </Fragment>
