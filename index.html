@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
-    <meta charset="UTF-," />
+    <meta charset="UTF-8" />
     <link rel="icon" type="image/svg+xml" href="/vite.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Nebula - Transforme Suas Noites</title>
@@ -10,6 +10,9 @@
       /* Simple smooth scroll */
       html {
         scroll-behavior: smooth;
+      }
+      .toast {
+        transition: opacity 300ms ease-in-out, transform 300ms ease-in-out;
       }
     </style>
   <script type="importmap">
@@ -443,10 +446,38 @@ const Footer = () => {
   );
 };
 
-// From components/AdminDashboard.tsx
+// --- ADMIN COMPONENTS (REFACTORED) ---
+
+// Reusable InputField component defined globally to prevent re-rendering issues
+const InputField = ({ label, value, name, section, onChange }) => (
+    React.createElement('div', null,
+      React.createElement('label', { htmlFor: `${section}-${name}`, className: "block text-sm font-medium text-gray-400 mb-1" }, label),
+      React.createElement('input', {
+        type: "text",
+        id: `${section}-${name}`,
+        name: name,
+        value: value,
+        onChange: (e) => onChange(section, name, e.target.value),
+        className: "w-full bg-gray-700 border border-gray-600 rounded-md py-2 px-3 text-white focus:outline-none focus:ring-2 focus:ring-indigo-500"
+      })
+    )
+);
+
+// Reusable Toast component for save feedback
+const Toast = ({ message, show }) => {
+    return React.createElement('div', {
+        className: `toast fixed bottom-24 right-8 bg-green-500 text-white py-2 px-4 rounded-md shadow-lg z-50 ${show ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`
+    }, message);
+};
+
+
+// From components/AdminDashboard.tsx (Refactored)
 const AdminDashboard = ({ data, setData }) => {
+  const [localData, setLocalData] = useState(data);
+  const [showToast, setShowToast] = useState(false);
+
   const handleInputChange = (section, field, value) => {
-    setData((prev) => ({
+    setLocalData((prev) => ({
       ...prev,
       [section]: {
         ...prev[section],
@@ -456,80 +487,84 @@ const AdminDashboard = ({ data, setData }) => {
   };
 
   const handleListItemChange = (section, index, field, value) => {
-    setData((prev) => ({
+    setLocalData((prev) => ({
       ...prev,
       [section]: prev[section].map((item, i) =>
         i === index ? { ...item, [field]: value } : item
       ),
     }));
   };
+  
+  const handleSave = () => {
+      setData(localData); // Persist changes to the main state and localStorage
+      setShowToast(true);
+      setTimeout(() => setShowToast(false), 3000); // Hide toast after 3 seconds
+  };
 
-  const InputField = ({ label, value, name, section }) => (
-    React.createElement('div', null,
-      React.createElement('label', { htmlFor: `${section}-${name}`, className: "block text-sm font-medium text-gray-400 mb-1" }, label),
-      React.createElement('input', {
-        type: "text",
-        id: `${section}-${name}`,
-        name: name,
-        value: value,
-        onChange: (e) => handleInputChange(section, name, e.target.value),
-        className: "w-full bg-gray-700 border border-gray-600 rounded-md py-2 px-3 text-white focus:outline-none focus:ring-2 focus:ring-indigo-500"
-      })
-    )
-  );
-
-  return React.createElement('div', { className: "bg-gray-900 min-h-screen text-white p-4 sm:p-8" },
-    React.createElement('div', { className: "container mx-auto max-w-4xl" },
-      React.createElement('header', { className: "flex flex-col sm:flex-row justify-between items-center mb-8" },
-        React.createElement('div', null,
-          React.createElement('h1', { className: "text-3xl sm:text-4xl font-bold mb-2" }, "Painel de Gerenciamento"),
-          React.createElement('p', { className: "text-gray-400" }, "Edite o conteúdo do site aqui.")
-        ),
-        React.createElement('a', { href: "/", className: "mt-4 sm:mt-0 bg-indigo-600 hover:bg-indigo-500 text-white font-bold py-2 px-4 rounded-full transition duration-300" }, "Voltar ao Site")
-      ),
-      React.createElement('main', { className: "space-y-12" },
-        React.createElement('fieldset', { className: "border border-gray-700 p-6 rounded-lg" },
-          React.createElement('legend', { className: "text-xl font-semibold px-2 text-indigo-400" }, "Seção Hero"),
-          React.createElement('div', { className: "space-y-4" },
-            React.createElement(InputField, { label: "Título (Linha 1)", name: "titleLine1", value: data.hero.titleLine1, section: "hero" }),
-            React.createElement(InputField, { label: "Título (Linha 2)", name: "titleLine2", value: data.hero.titleLine2, section: "hero" }),
-            React.createElement(InputField, { label: "Subtítulo", name: "subtitle", value: data.hero.subtitle, section: "hero" })
-          )
-        ),
-        React.createElement('fieldset', { className: "border border-gray-700 p-6 rounded-lg" },
-          React.createElement('legend', { className: "text-xl font-semibold px-2 text-indigo-400" }, "Seção de Features"),
-          data.features.map((feature, index) => (
-            React.createElement('div', { key: index, className: "space-y-4 border-b border-gray-800 pb-6 mb-6 last:border-b-0 last:mb-0 last:pb-0" },
-              React.createElement('h3', { className: "text-lg font-medium text-gray-300" }, `Feature ${index + 1}`),
-              React.createElement('input', { type: "text", value: feature.title, onChange: (e) => handleListItemChange('features', index, 'title', e.target.value), className: "w-full bg-gray-700 border border-gray-600 rounded-md py-2 px-3 text-white focus:outline-none focus:ring-2 focus:ring-indigo-500" }),
-              React.createElement('textarea', { value: feature.description, onChange: (e) => handleListItemChange('features', index, 'description', e.target.value), rows: 2, className: "w-full bg-gray-700 border border-gray-600 rounded-md py-2 px-3 text-white focus:outline-none focus:ring-2 focus:ring-indigo-500" })
-            )
-          ))
-        ),
-        React.createElement('fieldset', { className: "border border-gray-700 p-6 rounded-lg" },
-            React.createElement('legend', { className: "text-xl font-semibold px-2 text-indigo-400" }, "Seção de Soluções"),
-             data.solutions.map((solution, index) => (
-                React.createElement('div', { key: index, className: "space-y-4 border-b border-gray-800 pb-6 mb-6 last:border-b-0 last:mb-0 last:pb-0" },
-                  React.createElement('h3', { className: "text-lg font-medium text-gray-300" }, `Solução ${index + 1}`),
-                  React.createElement('input', { type: "text", placeholder: "URL da Imagem", value: solution.imageUrl, onChange: (e) => handleListItemChange('solutions', index, 'imageUrl', e.target.value), className: "w-full bg-gray-700 border border-gray-600 rounded-md py-2 px-3 text-white focus:outline-none focus:ring-2 focus:ring-indigo-500"}),
-                  React.createElement('input', { type: "text", placeholder: "Título", value: solution.title, onChange: (e) => handleListItemChange('solutions', index, 'title', e.target.value), className: "w-full bg-gray-700 border border-gray-600 rounded-md py-2 px-3 text-white focus:outline-none focus:ring-2 focus:ring-indigo-500"}),
-                  React.createElement('textarea', { placeholder: "Descrição", value: solution.description, onChange: (e) => handleListItemChange('solutions', index, 'description', e.target.value), rows: 2, className: "w-full bg-gray-700 border border-gray-600 rounded-md py-2 px-3 text-white focus:outline-none focus:ring-2 focus:ring-indigo-500"}),
-                  React.createElement('input', { type: "text", placeholder: "Texto do Botão", value: solution.buttonText, onChange: (e) => handleListItemChange('solutions', index, 'buttonText', e.target.value), className: "w-full bg-gray-700 border border-gray-600 rounded-md py-2 px-3 text-white focus:outline-none focus:ring-2 focus:ring-indigo-500"})
-                )
-             ))
+  return React.createElement(React.Fragment, null,
+    React.createElement('div', { className: "bg-gray-900 min-h-screen text-white p-4 sm:p-8" },
+      React.createElement('div', { className: "container mx-auto max-w-4xl" },
+        React.createElement('header', { className: "flex flex-col sm:flex-row justify-between items-center mb-8" },
+          React.createElement('div', null,
+            React.createElement('h1', { className: "text-3xl sm:text-4xl font-bold mb-2" }, "Painel de Gerenciamento"),
+            React.createElement('p', { className: "text-gray-400" }, "Edite o conteúdo do site aqui.")
           ),
-        React.createElement('fieldset', { className: "border border-gray-700 p-6 rounded-lg" },
-          React.createElement('legend', { className: "text-xl font-semibold px-2 text-indigo-400" }, "Seção CTA (Call to Action)"),
-          React.createElement('div', { className: "space-y-4" },
-            React.createElement(InputField, { label: "Título", name: "title", value: data.cta.title, section: "cta" }),
-            React.createElement(InputField, { label: "Subtítulo", name: "subtitle", value: data.cta.subtitle, section: "cta" }),
-            React.createElement(InputField, { label: "Preço Original", name: "originalPrice", value: data.cta.originalPrice, section: "cta" }),
-            React.createElement(InputField, { label: "Preço com Desconto", name: "discountedPrice", value: data.cta.discountedPrice, section: "cta" }),
-            React.createElement(InputField, { label: "Texto do Botão", name: "buttonText", value: data.cta.buttonText, section: "cta" })
+          React.createElement('a', { href: "/", className: "mt-4 sm:mt-0 bg-indigo-600 hover:bg-indigo-500 text-white font-bold py-2 px-4 rounded-full transition duration-300" }, "Voltar ao Site")
+        ),
+        React.createElement('main', { className: "space-y-12" },
+          React.createElement('fieldset', { className: "border border-gray-700 p-6 rounded-lg" },
+            React.createElement('legend', { className: "text-xl font-semibold px-2 text-indigo-400" }, "Seção Hero"),
+            React.createElement('div', { className: "space-y-4" },
+              React.createElement(InputField, { label: "Título (Linha 1)", name: "titleLine1", value: localData.hero.titleLine1, section: "hero", onChange: handleInputChange }),
+              React.createElement(InputField, { label: "Título (Linha 2)", name: "titleLine2", value: localData.hero.titleLine2, section: "hero", onChange: handleInputChange }),
+              React.createElement(InputField, { label: "Subtítulo", name: "subtitle", value: localData.hero.subtitle, section: "hero", onChange: handleInputChange })
+            )
+          ),
+          React.createElement('fieldset', { className: "border border-gray-700 p-6 rounded-lg" },
+            React.createElement('legend', { className: "text-xl font-semibold px-2 text-indigo-400" }, "Seção de Features"),
+            localData.features.map((feature, index) => (
+              React.createElement('div', { key: index, className: "space-y-4 border-b border-gray-800 pb-6 mb-6 last:border-b-0 last:mb-0 last:pb-0" },
+                React.createElement('h3', { className: "text-lg font-medium text-gray-300" }, `Feature ${index + 1}`),
+                React.createElement('input', { type: "text", value: feature.title, onChange: (e) => handleListItemChange('features', index, 'title', e.target.value), className: "w-full bg-gray-700 border border-gray-600 rounded-md py-2 px-3 text-white focus:outline-none focus:ring-2 focus:ring-indigo-500" }),
+                React.createElement('textarea', { value: feature.description, onChange: (e) => handleListItemChange('features', index, 'description', e.target.value), rows: 2, className: "w-full bg-gray-700 border border-gray-600 rounded-md py-2 px-3 text-white focus:outline-none focus:ring-2 focus:ring-indigo-500" })
+              )
+            ))
+          ),
+          React.createElement('fieldset', { className: "border border-gray-700 p-6 rounded-lg" },
+              React.createElement('legend', { className: "text-xl font-semibold px-2 text-indigo-400" }, "Seção de Soluções"),
+               localData.solutions.map((solution, index) => (
+                  React.createElement('div', { key: index, className: "space-y-4 border-b border-gray-800 pb-6 mb-6 last:border-b-0 last:mb-0 last:pb-0" },
+                    React.createElement('h3', { className: "text-lg font-medium text-gray-300" }, `Solução ${index + 1}`),
+                    React.createElement('input', { type: "text", placeholder: "URL da Imagem", value: solution.imageUrl, onChange: (e) => handleListItemChange('solutions', index, 'imageUrl', e.target.value), className: "w-full bg-gray-700 border border-gray-600 rounded-md py-2 px-3 text-white focus:outline-none focus:ring-2 focus:ring-indigo-500"}),
+                    React.createElement('input', { type: "text", placeholder: "Título", value: solution.title, onChange: (e) => handleListItemChange('solutions', index, 'title', e.target.value), className: "w-full bg-gray-700 border border-gray-600 rounded-md py-2 px-3 text-white focus:outline-none focus:ring-2 focus:ring-indigo-500"}),
+                    React.createElement('textarea', { placeholder: "Descrição", value: solution.description, onChange: (e) => handleListItemChange('solutions', index, 'description', e.target.value), rows: 2, className: "w-full bg-gray-700 border border-gray-600 rounded-md py-2 px-3 text-white focus:outline-none focus:ring-2 focus:ring-indigo-500"}),
+                    React.createElement('input', { type: "text", placeholder: "Texto do Botão", value: solution.buttonText, onChange: (e) => handleListItemChange('solutions', index, 'buttonText', e.target.value), className: "w-full bg-gray-700 border border-gray-600 rounded-md py-2 px-3 text-white focus:outline-none focus:ring-2 focus:ring-indigo-500"})
+                  )
+               ))
+            ),
+          React.createElement('fieldset', { className: "border border-gray-700 p-6 rounded-lg" },
+            React.createElement('legend', { className: "text-xl font-semibold px-2 text-indigo-400" }, "Seção CTA (Call to Action)"),
+            React.createElement('div', { className: "space-y-4" },
+              React.createElement(InputField, { label: "Título", name: "title", value: localData.cta.title, section: "cta", onChange: handleInputChange }),
+              React.createElement(InputField, { label: "Subtítulo", name: "subtitle", value: localData.cta.subtitle, section: "cta", onChange: handleInputChange }),
+              React.createElement(InputField, { label: "Preço Original", name: "originalPrice", value: localData.cta.originalPrice, section: "cta", onChange: handleInputChange }),
+              React.createElement(InputField, { label: "Preço com Desconto", name: "discountedPrice", value: localData.cta.discountedPrice, section: "cta", onChange: handleInputChange }),
+              React.createElement(InputField, { label: "Texto do Botão", name: "buttonText", value: localData.cta.buttonText, section: "cta", onChange: handleInputChange })
+            )
           )
         )
       )
-    )
+    ),
+    React.createElement('button', {
+      onClick: handleSave,
+      className: "fixed bottom-8 right-8 bg-green-600 hover:bg-green-500 text-white font-bold py-3 px-6 rounded-full shadow-lg transition duration-300 transform hover:scale-105 flex items-center space-x-2 z-50"
+    },
+      React.createElement('svg', { xmlns:"http://www.w3.org/2000/svg", className:"h-6 w-6", fill:"none", viewBox:"0 0 24 24", stroke:"currentColor", strokeWidth:2 },
+        React.createElement('path', { strokeLinecap:"round", strokeLinejoin:"round", d:"M5 13l4 4L19 7"})
+      ),
+      React.createElement('span', null, 'Salvar Alterações')
+    ),
+    React.createElement(Toast, { message: 'Conteúdo salvo com sucesso!', show: showToast })
   );
 };
 
@@ -592,7 +627,7 @@ const App = () => {
       React.createElement(Solutions, { solutions: siteData.solutions }),
       React.createElement(Testimonials, { testimonials: siteData.testimonials }),
       React.createElement(FAQ, { faqData: siteData.faq }),
-      React.createElement(CTA, { content: siteData.cta })
+      React.createElement(CTA, { content: site.cta })
     ),
     React.createElement(Footer, null)
   );
