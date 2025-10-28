@@ -8,148 +8,53 @@
   <script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
   <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
   <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+  <!-- Firebase SDKs -->
+  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
   <style>
     /* Estilos para o seletor de cor */
     input[type="color"]::-webkit-color-swatch-wrapper { padding: 0; }
     input[type="color"]::-webkit-color-swatch { border: none; border-radius: 0.375rem; }
     input[type="color"]::-moz-color-swatch { border: none; border-radius: 0.375rem; }
-
     /* Estilos para o botão flutuante e notificação */
-    .save-button {
-      position: fixed;
-      bottom: 2rem;
-      right: 2rem;
-      z-index: 1000;
-    }
+    .save-button { position: fixed; bottom: 2rem; right: 2rem; z-index: 1000; }
     .notification {
-        position: fixed;
-        bottom: 2rem;
-        left: 50%;
-        transform: translateX(-50%);
-        z-index: 1100;
+        position: fixed; bottom: 2rem; left: 50%;
+        transform: translateX(-50%); z-index: 1100;
         transition: opacity 0.5s, transform 0.5s;
     }
-    .notification.hidden {
-        opacity: 0;
-        transform: translate(-50%, 2rem);
-    }
+    .notification.hidden { opacity: 0; transform: translate(-50%, 2rem); }
     .collapsible-content {
         transition: max-height 0.5s ease-in-out, opacity 0.3s ease-in-out, padding 0.5s ease-in-out;
         overflow: hidden;
     }
     .collapsible-content.collapsed {
-        max-height: 0 !important;
-        opacity: 0;
-        padding-top: 0 !important;
-        padding-bottom: 0 !important;
-        margin-top: 0 !important;
+        max-height: 0 !important; opacity: 0; padding-top: 0 !important;
+        padding-bottom: 0 !important; margin-top: 0 !important;
     }
     .youtube-player-container {
-        position: relative;
-        width: 100%;
-        padding-bottom: 56.25%; /* 16:9 aspect ratio */
-        height: 0;
-        overflow: hidden;
-        margin-bottom: 2rem;
+        position: relative; width: 100%; padding-bottom: 56.25%; /* 16:9 */
+        height: 0; overflow: hidden; margin-bottom: 2rem;
     }
-    .youtube-player-container iframe {
-        position: absolute;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        border: 0;
+    .youtube-player-container iframe { position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: 0; }
+    .loader-container {
+        display: flex; align-items: center; justify-content: center;
+        height: 100vh; background-color: #111827; color: #9ca3af; font-size: 1.2rem;
     }
   </style>
-<script type="importmap">
-{
-  "imports": {
-    "react": "https://aistudiocdn.com/react@^19.2.0",
-    "react/": "https://aistudiocdn.com/react@^19.2.0/"
-  }
-}
-</script>
 </head>
 <body class="bg-gray-900 text-white">
   <div id="root"></div>
 
   <script type="text/babel">
-    const { useState, useEffect, useMemo, useCallback, Fragment } = React;
-
-    // --- DADOS INICIAIS E TIPOS ---
-    const initialData = {
-      companyInfo: {
-        name: 'Nebula',
-        logoUrl: 'data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIGNsYXNzPSJ3LTggaC04IHRleHRbdmFyKC0tY29sb3ItYWNjZW50KV0iIGZpbGw9Im5vbmUiIHZpZXdCb3g9IjAgMCAyNCAyNCIgc3Ryb2tlPSJjdXJyZW50Q29sb3IiPjxwYXRoIHN0cm9rZUxpbmVjYXA9InJvdW5kIiBzdHJva2VMaW5lam9pbj0icm91bmQiIHN0cm9rZVdpZHRoPSIyIiBkPSJNNSAzbjRNMyA1aDRNNiAxN3Y0bS0yLTJoNG01LTE2bDIuMjg2IDYuODU3TDIxIDEybC01LjcxNCAyLjE0M0wxMyAyMWwtMi4yODYtNi44NTdMNSAxMmw1LjcxNC0yLjE0M0wxMyAzWiIgLz48L3N2Zz4=',
-        tagline: 'Uma experiência celestial, criada para você.'
-      },
-      menuItems: [
-        { text: 'Funcionalidades', link: '#interest' },
-        { text: 'Soluções', link: '#solutions' },
-        { text: 'Depoimentos', link: '#desire' },
-        { text: 'Comprar Agora', link: '#comprar' },
-      ],
-      palette: {
-        primary: '#6366f1',
-        accent: '#818cf8',
-        backgroundDark: '#111827',
-        backgroundLight: '#1f2937',
-        textPrimary: '#ffffff',
-        textSecondary: '#9ca3af',
-      },
-      hero: {
-        titleLine1: 'Transforme Suas Noites.',
-        titleLine2: 'Descubra o Universo com Nebula.',
-        subtitle: 'Adormeça sob um céu estrelado personalizado, ao som de paisagens sonoras relaxantes, e desperte sentindo-se completamente renovado.',
-        videoUrl: 'https://www.youtube.com/watch?v=LXb3EKWsInQ',
-        showVideo: true,
-      },
-      footerInfo: {
-        address: 'Rua das Estrelas, 123\nCosmos, SP - 01234-567',
-        phone: '(11) 91234-5678',
-        email: 'contato@nebula.inc',
-        social: {
-          facebook: '#',
-          instagram: '#',
-          twitter: '#',
-        }
-      },
-      features: [
-        { title: 'Projeções Hiper-realistas', description: 'Nossa tecnologia patenteada mapeia constelações reais e nebulosas vibrantes, criando uma experiência imersiva única no seu teto.' },
-        { title: 'Paisagens Sonoras com IA', description: 'Sincronizado com a projeção, o Nebula gera sons ambientes relaxantes que se adaptam ao seu ritmo de sono para uma noite perfeita.' },
-        { title: 'Controle Inteligente', description: 'Use nosso aplicativo para escolher seu céu noturno, programar sessões de relaxamento e integrar com sua casa inteligente.' },
-      ],
-      solutions: [
-        { imageUrl: 'https://picsum.photos/600/400?random=6', title: 'Sono Profundo e Restaurador', description: 'Crie o ambiente perfeito para adormecer. As projeções calmantes e os sons adaptativos reduzem a ansiedade e promovem um sono mais profundo e reparador.', buttonText: 'Melhore seu Sono' },
-        { imageUrl: 'https://picsum.photos/600/400?random=7', title: 'Foco para Meditação e Yoga', description: 'Transforme qualquer cômodo em um santuário de paz. Use o Nebula para criar um cenário imersivo que aprofunda sua concentração e relaxamento durante a meditação.', buttonText: 'Encontre sua Paz' },
-        { imageUrl: 'https://picsum.photos/600/400?random=8', title: 'Noites Mágicas para Crianças', description: 'Estimule a imaginação dos seus filhos e acalme o medo do escuro. Uma galáxia no teto torna a hora de dormir uma aventura divertida e tranquila.', buttonText: 'Encante Seus Filhos' },
-      ],
-      testimonials: [
-        { name: 'Ana S.', role: 'Designer de Interiores', quote: 'O Nebula mudou completamente minha rotina de sono. Nunca me senti tão relaxada e inspirada ao acordar. É a peça central do meu quarto.', avatarUrl: 'https://picsum.photos/100/100?random=2' },
-        { name: 'Marcos P.', role: 'Desenvolvedor de Software', quote: 'É como ter um pedaço do universo no meu quarto. Me ajuda a desligar depois de um dia longo de codificação. Meus filhos também adoram!', avatarUrl: 'https://picsum.photos/100/100?random=3' },
-        { name: 'Juliana F.', role: 'Professora de Yoga', quote: 'Uso o Nebula durante minhas sessões de meditação em casa. A combinação das luzes e sons é simplesmente mágica. Recomendo a todos os meus alunos.', avatarUrl: 'https://picsum.photos/100/100?random=4' },
-      ],
-      faq: [
-        { question: 'Qual a diferença do Nebula para outros projetores de estrelas?', answer: 'O Nebula utiliza projeção a laser de alta definição para mapear constelações reais e é o único com um sistema de som inteligente que se adapta ao seu ambiente e ritmo de sono para uma imersão completa.' },
-        { question: 'A instalação é complicada?', answer: 'Não! Basta ligar o Nebula na tomada, conectá-lo ao Wi-Fi através do nosso aplicativo intuitivo e ele está pronto para usar. Leva menos de 5 minutos.' },
-        { question: 'Posso usar minhas próprias músicas ou playlists?', answer: 'Sim! O Nebula funciona como uma caixa de som Bluetooth de alta qualidade. Você pode conectar seu celular e ouvir suas músicas, podcasts ou audiolivros favoritos sob as estrelas.' },
-        { question: 'Qual a política de garantia e devolução?', answer: 'Oferecemos uma garantia de 1 ano contra defeitos de fabricação e uma política de devolução sem perguntas de 30 dias. Se você não amar seu Nebula, nós devolvemos o seu dinheiro.' },
-      ],
-      cta: {
-        title: 'Pronto Para Viajar Pelas Estrelas?',
-        subtitle: 'Receba seu Nebula em casa com frete grátis e transforme seu quarto no seu santuário pessoal. Garantia de 30 dias para devolução.',
-        originalPrice: 'R$ 1.199,00',
-        discountedPrice: 'R$ 899,00',
-        buttonText: 'Comprar Agora e Garantir o Seu',
-      },
-    };
+    const { useState, useEffect, Fragment } = React;
 
     // --- ÍCONES ---
     const StarIcon = ({ className }) => (<svg xmlns="http://www.w3.org/2000/svg" className={className} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z" /></svg>);
     const SoundWaveIcon = ({ className }) => (<svg xmlns="http://www.w3.org/2000/svg" className={className} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M9 19V6l12-3v13M9 19c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zm12-3c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zM9 6l12-3" /></svg>);
     const SmartPhoneIcon = ({ className }) => (<svg xmlns="http://www.w3.org/2000/svg" className={className} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M12 18h.01M8 21h8a2 2 0 002-2V5a2 2 0 00-2-2H8a2 2 0 00-2 2v14a2 2 0 002 2z" /></svg>);
     const FacebookIcon = () => (<svg className="w-6 h-6" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path fillRule="evenodd" d="M22 12c0-5.523-4.477-10-10-10S2 6.477 2 12c0 4.991 3.657 9.128 8.438 9.878v-6.987h-2.54V12h2.54V9.797c0-2.506 1.492-3.89 3.777-3.89 1.094 0 2.238.195 2.238.195v2.46h-1.26c-1.243 0-1.63.771-1.63 1.562V12h2.773l-.443 2.89h-2.33v6.988C18.343 21.128 22 16.991 22 12z" clipRule="evenodd" /></svg>);
-    const InstagramIcon = () => (<svg className="w-6 h-6" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path fillRule="evenodd" d="M12.315 2c2.43 0 2.784.013 3.808.06 1.064.049 1.791.218 2.427.465a4.902 4.902 0 011.772 1.153 4.902 4.902 0 011.153 1.772c.247.636.416 1.363.465 2.427.048 1.024.06 1.378.06 3.808s-.012 2.784-.06 3.808c-.049 1.064-.218 1.791-.465 2.427a4.902 4.902 0 01-1.153 1.772 4.902 4.902 0 01-1.772 1.153c-.636.247-1.363.416-2.427.465-1.024.048-1.378.06-3.808.06s-2.784-.012-3.808-.06c-1.064-.049-1.791-.218-2.427-.465a4.902 4.902 0 01-1.772-1.153 4.902 4.902 0 01-1.153-1.772c-.247-.636-.416-1.363-.465-2.427-.048-1.024-.06-1.378-.06-3.808s.012-2.784.06-3.808c.049-1.064.218-1.791.465-2.427a4.902 4.902 0 011.153-1.772A4.902 4.902 0 016.08 2.525c.636-.247 1.363-.416 2.427-.465C9.53 2.013 9.884 2 12.315 2zM12 7.167a4.833 4.833 0 100 9.666 4.833 4.833 0 000-9.666zM12 15a3 3 0 110-6 3 3 0 010 6zm4.833-8.167a1.167 1.167 0 100-2.334 1.167 1.167 0 000 2.334z" clipRule="evenodd" /></svg>);
+    const InstagramIcon = () => (<svg className="w-6 h-6" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path fillRule="evenodd" d="M12.315 2c2.43 0 2.784.013 3.808.06 1.064.049 1.791.218 2.427.465a4.902 4.902 0 011.772 1.153 4.902 4.902 0 011.153 1.772c.247.636.416 1.363.465 2.427.048 1.024.06 1.378.06 3.808s-.012 2.784-.06 3.808c-.049 1.064-.218 1.791-.465 2.427a4.902 4.902 0 01-1.153 1.772 4.902 4.902 0 01-1.772 1.153c-.636.247-1.363.416-2.427.465-1.024.048-1.378.06-3.808.06s-2.784-.012-3.808-.06c-1.064-.049-1.791-.218-2.427-.465a4.902 4.902 0 01-1.772-1.153 4.902 4.902 0 01-1.153-1.772c-.247-.636-.416-1.363-.465-2.427-.048-1.024-.06-1.378-.06-3.808s.012-2.784.06-3.808c.049 1.064.218 1.791.465 2.427a4.902 4.902 0 011.153-1.772A4.902 4.902 0 016.08 2.525c.636-.247 1.363-.416 2.427-.465C9.53 2.013 9.884 2 12.315 2zM12 7.167a4.833 4.833 0 100 9.666 4.833 4.833 0 000-9.666zM12 15a3 3 0 110-6 3 3 0 010 6zm4.833-8.167a1.167 1.167 0 100-2.334 1.167 1.167 0 000 2.334z" clipRule="evenodd" /></svg>);
     const TwitterIcon = () => (<svg className="w-6 h-6" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path d="M8.29 20.251c7.547 0 11.675-6.253 11.675-11.675 0-.178 0-.355-.012-.53A8.348 8.348 0 0022 5.92a8.19 8.19 0 01-2.357.646 4.118 4.118 0 001.804-2.27 8.224 8.224 0 01-2.605.996 4.107 4.107 0 00-6.993 3.743 11.65 11.65 0 01-8.457-4.287 4.106 4.106 0 001.27 5.477A4.072 4.072 0 012.8 9.71v.052a4.105 4.105 0 003.292 4.022 4.095 4.095 0 01-1.853.07 4.108 4.108 0 003.834 2.85A8.233 8.233 0 012 18.407a11.616 11.616 0 006.29 1.84" /></svg>);
     const ChevronIcon = ({className}) => (<svg xmlns="http://www.w3.org/2000/svg" className={className} fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" /></svg>);
 
@@ -173,17 +78,11 @@
     const Hero = ({ content }) => {
       const getYouTubeEmbedUrl = (url) => {
         if (!url) return null;
-        let videoId = '';
         const youtubeRegex = /^(?:https?:\/\/)?(?:www\.)?(?:youtube\.com\/(?:[^\/\n\s]+\/\S+\/|(?:v|e(?:mbed)?)\/|\S*?[?&]v=)|youtu\.be\/)([a-zA-Z0-9_-]{11})/;
         const match = url.match(youtubeRegex);
-        if (match && match[1]) {
-          videoId = match[1];
-        }
-        return videoId ? `https://www.youtube.com/embed/${videoId}?autoplay=1&mute=1&loop=1&playlist=${videoId}&controls=0` : null;
+        return match?.[1] ? `https://www.youtube.com/embed/${match[1]}?autoplay=1&mute=1&loop=1&playlist=${match[1]}&controls=0` : null;
       };
-
       const embedUrl = getYouTubeEmbedUrl(content.videoUrl);
-
       return (
         <section id="attention" className="min-h-screen flex items-center justify-center text-center relative overflow-hidden">
           <div className="absolute inset-0 bg-cover bg-center z-0" style={{ backgroundImage: `url('https://picsum.photos/1920/1080?random=1&blur=5')` }}><div className="absolute inset-0 bg-gray-900 bg-opacity-60"></div></div>
@@ -191,13 +90,7 @@
             {content.showVideo && embedUrl && (
               <div className="max-w-3xl mx-auto">
                 <div className="youtube-player-container rounded-lg shadow-2xl">
-                  <iframe
-                    src={embedUrl}
-                    title="YouTube video player"
-                    frameBorder="0"
-                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                    allowFullScreen
-                  ></iframe>
+                  <iframe src={embedUrl} title="YouTube video player" frameBorder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowFullScreen></iframe>
                 </div>
               </div>
             )}
@@ -362,103 +255,58 @@
     );
 
     // --- PAINEL DE ADMINISTRAÇÃO ---
-    const AdminDashboard = ({ data, onDataChange }) => {
+    const AdminDashboard = ({ data, contentDocRef }) => {
       const [localData, setLocalData] = useState(data);
-      const [showNotification, setShowNotification] = useState(false);
+      const [notification, setNotification] = useState({ visible: false, message: '', type: 'success' });
       const [openSections, setOpenSections] = useState({});
 
       useEffect(() => { setLocalData(data); }, [data]);
 
-      const toggleSection = (section) => {
-        setOpenSections(prev => ({ ...prev, [section]: !prev[section] }));
-      };
+      const toggleSection = (section) => setOpenSections(prev => ({ ...prev, [section]: !prev[section] }));
 
-      const handleSave = () => {
-        onDataChange(localData);
-
-        const newDataString = `const initialData = ${JSON.stringify(localData, null, 2)}`;
-        const scripts = Array.from(document.getElementsByTagName('script'));
-        const babelScript = scripts.find(s => s.type === 'text/babel' && s.innerHTML.includes('const initialData ='));
-
-        if (!babelScript) {
-            alert('Erro: Não foi possível encontrar o script de dados para atualizar.');
-            return;
+      const handleSave = async () => {
+        try {
+          await contentDocRef.set(localData);
+          setNotification({ visible: true, message: 'Alterações publicadas online com sucesso!', type: 'success' });
+        } catch (error) {
+          console.error("Error saving to Firestore: ", error);
+          setNotification({ visible: true, message: 'Erro ao publicar. Tente novamente.', type: 'error' });
+        } finally {
+          setTimeout(() => setNotification(prev => ({ ...prev, visible: false })), 5000);
         }
-
-        const oldScriptContent = babelScript.innerHTML;
-        const newScriptContent = oldScriptContent.replace(
-            /const initialData = \{[\s\S]*?\};/,
-            newDataString + ';'
-        );
-        
-        let fullHtml = document.documentElement.outerHTML;
-
-        // Replace script content in the full HTML string and clean up React attribute
-        const newFullHtml = fullHtml.replace(oldScriptContent, newScriptContent)
-                                    .replace(' data-reactroot=""', '');
-
-
-        const blob = new Blob([newFullHtml], { type: 'text/html;charset=utf-8' });
-        const url = URL.createObjectURL(blob);
-        const a = document.createElement('a');
-        a.href = url;
-        a.download = 'index.html';
-        document.body.appendChild(a);
-        a.click();
-        document.body.removeChild(a);
-        URL.revokeObjectURL(url);
-        
-        setShowNotification(true);
-        setTimeout(() => setShowNotification(false), 3000);
       };
 
-      const handleInputChange = (section, field, value) => {
-        setLocalData(prev => ({ ...prev, [section]: { ...prev[section], [field]: value } }));
-      };
-      
-      const handleNestedInputChange = (section, nested, field, value) => {
-        setLocalData(prev => ({ ...prev, [section]: { ...prev[section], [nested]: { ...prev[section][nested], [field]: value }}}));
-      };
-      
-      const handleListItemChange = (section, index, field, value) => {
-        setLocalData(prev => ({ ...prev, [section]: prev[section].map((item, i) => i === index ? { ...item, [field]: value } : item) }));
-      };
-      
-      const handleRemoveItem = (section, index) => {
-          setLocalData(prev => ({ ...prev, [section]: prev[section].filter((_, i) => i !== index) }));
-      };
-      
-      const handleAddItem = (section, newItem) => {
-          setLocalData(prev => ({ ...prev, [section]: [...prev[section], newItem] }));
-      };
-
-      const handlePaletteChange = (name, value) => {
-        setLocalData(prev => ({ ...prev, palette: { ...prev.palette, [name]: value } }));
-      };
+      const handleInputChange = (section, field, value) => setLocalData(prev => ({ ...prev, [section]: { ...prev[section], [field]: value } }));
+      const handleNestedInputChange = (section, nested, field, value) => setLocalData(prev => ({ ...prev, [section]: { ...prev[section], [nested]: { ...prev[section][nested], [field]: value }}}));
+      const handleListItemChange = (section, index, field, value) => setLocalData(prev => ({ ...prev, [section]: prev[section].map((item, i) => i === index ? { ...item, [field]: value } : item) }));
+      const handleRemoveItem = (section, index) => setLocalData(prev => ({ ...prev, [section]: prev[section].filter((_, i) => i !== index) }));
+      const handleAddItem = (section, newItem) => setLocalData(prev => ({ ...prev, [section]: [...prev[section], newItem] }));
+      const handlePaletteChange = (name, value) => setLocalData(prev => ({ ...prev, palette: { ...prev.palette, [name]: value } }));
       
       const CollapsibleSection = ({ title, sectionKey, children }) => (
         <fieldset className="border border-gray-700 p-6 rounded-lg">
-            <legend className="text-xl font-semibold px-2 text-indigo-400 w-full cursor-pointer" onClick={() => toggleSection(sectionKey)}>
-                 <div className="w-full flex justify-between items-center">
-                    <span>{title}</span>
-                    <ChevronIcon className={`w-5 h-5 transition-transform text-gray-400 ${openSections[sectionKey] ? 'rotate-180' : ''}`} />
-                </div>
-            </legend>
-            <div className={`collapsible-content pt-4 ${!openSections[sectionKey] ? 'collapsed' : ''}`} style={{maxHeight: openSections[sectionKey] ? '5000px' : '0'}}>
-                {children}
+          <legend className="text-xl font-semibold px-2 text-indigo-400 w-full cursor-pointer" onClick={() => toggleSection(sectionKey)}>
+            <div className="w-full flex justify-between items-center">
+              <span>{title}</span>
+              <ChevronIcon className={`w-5 h-5 transition-transform text-gray-400 ${openSections[sectionKey] ? 'rotate-180' : ''}`} />
             </div>
+          </legend>
+          <div className={`collapsible-content pt-4 ${!openSections[sectionKey] ? 'collapsed' : ''}`} style={{maxHeight: openSections[sectionKey] ? '5000px' : '0'}}>
+            {children}
+          </div>
         </fieldset>
       );
+      
+      const notificationColor = notification.type === 'success' ? 'border-green-500' : 'border-red-500';
 
       return (
         <div className="bg-gray-900 min-h-screen text-white p-4 sm:p-8">
           <div className="container mx-auto max-w-4xl">
             <header className="flex flex-col sm:flex-row justify-between items-center mb-8">
-              <div><h1 className="text-3xl sm:text-4xl font-bold mb-2">Painel de Gerenciamento</h1><p className="text-gray-400">Edite o conteúdo e a aparência do site aqui.</p></div>
+              <div><h1 className="text-3xl sm:text-4xl font-bold mb-2">Painel de Gerenciamento</h1><p className="text-gray-400">As alterações são publicadas online instantaneamente.</p></div>
               <a href="/#" className="mt-4 sm:mt-0 bg-indigo-600 hover:bg-indigo-500 text-white font-bold py-2 px-4 rounded-full transition duration-300">Voltar ao Site</a>
             </header>
             <main className="space-y-12">
-              
               <CollapsibleSection title="Informações da Empresa" sectionKey="companyInfo">
                 <div className="space-y-4">
                   <label className="block text-sm font-medium text-gray-400 mb-1">Nome da Empresa</label>
@@ -467,7 +315,6 @@
                   <input type="text" value={localData.companyInfo.logoUrl} onChange={e => handleInputChange('companyInfo', 'logoUrl', e.target.value)} className="w-full bg-gray-700 border border-gray-600 rounded-md py-2 px-3"/>
                 </div>
               </CollapsibleSection>
-
               <CollapsibleSection title="Menu do Cabeçalho" sectionKey="menuItems">
                 {localData.menuItems.map((item, index) => (
                   <div key={index} className="flex items-end gap-4 border-b border-gray-800 pb-4 mb-4">
@@ -478,7 +325,6 @@
                 ))}
                 <button onClick={() => handleAddItem('menuItems', {text: 'Novo Item', link: '#'})} className="mt-4 bg-blue-600 hover:bg-blue-500 text-white font-bold py-2 px-4 rounded-md">Adicionar Item</button>
               </CollapsibleSection>
-
               <CollapsibleSection title="Paleta de Cores" sectionKey="palette">
                 <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
                   {Object.entries(localData.palette).map(([name, value]) => (
@@ -492,7 +338,6 @@
                   ))}
                 </div>
               </CollapsibleSection>
-
               <CollapsibleSection title="Seção Hero" sectionKey="hero">
                 <div className="space-y-4">
                   <label className="block text-sm font-medium text-gray-400 mb-1">Título (Linha 1)</label>
@@ -506,7 +351,6 @@
                   <label className="flex items-center cursor-pointer"><input type="checkbox" checked={localData.hero.showVideo} onChange={e => handleInputChange('hero', 'showVideo', e.target.checked)} className="form-checkbox h-5 w-5 text-indigo-600 bg-gray-700 border-gray-600 rounded focus:ring-indigo-500"/><span className="ml-2 text-gray-300">Exibir vídeo na seção Hero</span></label>
                 </div>
               </CollapsibleSection>
-              
               <CollapsibleSection title="Seção de Depoimentos" sectionKey="testimonials">
                 {localData.testimonials.map((item, index) => (
                   <div key={index} className="space-y-4 border-b border-gray-800 pb-6 mb-6">
@@ -519,7 +363,6 @@
                 ))}
                  <button onClick={() => handleAddItem('testimonials', {name: '', role: '', quote: '', avatarUrl: ''})} className="mt-4 bg-blue-600 hover:bg-blue-500 text-white font-bold py-2 px-4 rounded-md">Adicionar Depoimento</button>
               </CollapsibleSection>
-              
               <CollapsibleSection title="Seção de FAQ" sectionKey="faq">
                 {localData.faq.map((item, index) => (
                   <div key={index} className="space-y-4 border-b border-gray-800 pb-6 mb-6">
@@ -530,7 +373,6 @@
                 ))}
                 <button onClick={() => handleAddItem('faq', {question: '', answer: ''})} className="mt-4 bg-blue-600 hover:bg-blue-500 text-white font-bold py-2 px-4 rounded-md">Adicionar Pergunta</button>
               </CollapsibleSection>
-
               <CollapsibleSection title="Rodapé" sectionKey="footerInfo">
                 <div className="space-y-4">
                     <label className="block text-sm font-medium text-gray-400 mb-1">Slogan</label>
@@ -550,19 +392,72 @@
                     <input type="text" value={localData.footerInfo.social.twitter} onChange={e => handleNestedInputChange('footerInfo', 'social', 'twitter', e.target.value)} className="w-full bg-gray-700 border border-gray-600 rounded-md py-2 px-3"/>
                 </div>
               </CollapsibleSection>
-
             </main>
           </div>
-          <button onClick={handleSave} className="save-button bg-green-600 hover:bg-green-500 text-white font-bold py-3 px-6 rounded-full transition duration-300 shadow-lg flex items-center"><svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" /></svg>Salvar e Baixar HTML</button>
-          <div className={`notification bg-gray-800 border border-green-500 text-white py-2 px-4 rounded-lg shadow-lg ${showNotification ? '' : 'hidden'}`}>Arquivo index.html baixado com sucesso!</div>
+          <button onClick={handleSave} className="save-button bg-green-600 hover:bg-green-500 text-white font-bold py-3 px-6 rounded-full transition duration-300 shadow-lg flex items-center"><svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" /></svg>Publicar Alterações Online</button>
+          <div className={`notification bg-gray-800 border ${notificationColor} text-white py-2 px-4 rounded-lg shadow-lg ${notification.visible ? '' : 'hidden'}`}>{notification.message}</div>
         </div>
       );
     };
 
     // --- APLICAÇÃO PRINCIPAL ---
     const App = () => {
-      const [siteData, setSiteData] = useState(initialData);
+      const [siteData, setSiteData] = useState(null);
+      const [isLoading, setIsLoading] = useState(true);
+      const [error, setError] = useState(null);
       const [route, setRoute] = useState(window.location.hash);
+      const [contentDocRef, setContentDocRef] = useState(null);
+
+      useEffect(() => {
+        // --- INÍCIO DA CONFIGURAÇÃO DO FIREBASE ---
+        const firebaseConfig = {
+          apiKey: "AIzaSyC8TxUoSQEnSMbZ-TAetQ_KyegiGnk6tkE",
+          authDomain: "site-template-af1d6.firebaseapp.com",
+          projectId: "site-template-af1d6",
+          storageBucket: "site-template-af1d6.appspot.com",
+          messagingSenderId: "162960459636",
+          appId: "1:162960459636:web:65f5c7e6f7e278fc588e21",
+          measurementId: "G-V22EXQB4WK"
+        };
+        // --- FIM DA CONFIGURAÇÃO DO FIREBASE ---
+
+        // Dados de fallback caso o Firebase não carregue ou esteja vazio.
+        const fallbackData = {"companyInfo":{"name":"Nebula","logoUrl":"data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIGNsYXNzPSJ3LTggaC04IHRleHRbdmFyKC0tY29sb3ItYWNjZW50KV0iIGZpbGw9Im5vbmUiIHZpZXdCb3g9IjAgMCAyNCAyNCIgc3Ryb2tlPSJjdXJyZW50Q29sb3IiPjxwYXRoIHN0cm9rZUxpbmVjYXA9InJvdW5kIiBzdHJva2VMaW5lam9pbj0icm91bmQiIHN0cm9rZVdpZHRoPSIyIiBkPSJNNSAzbjRNMyA1aDRNNiAxN3Y0bS0yLTJoNG01LTE2bDIuMjg2IDYuODU3TDIxIDEybC01LjcxNCAyLjE0M0wxMyAyMWwtMi4yODYtNi4yNTdMNSAxMmw1LjcxNC0yLjE0M0wxMyAzWiIgLz48L3N2Zz4=","tagline":"Uma experiência celestial, criada para você."},"menuItems":[{"text":"Funcionalidades","link":"#interest"},{"text":"Soluções","link":"#solutions"},{"text":"Depoimentos","link":"#desire"},{"text":"Comprar Agora","link":"#comprar"}],"palette":{"primary":"#6366f1","accent":"#818cf8","backgroundDark":"#111827","backgroundLight":"#1f2937","textPrimary":"#ffffff","textSecondary":"#9ca3af"},"hero":{"titleLine1":"Transforme Suas Noites.","titleLine2":"Descubra o Universo com Nebula.","subtitle":"Adormeça sob um céu estrelado personalizado, ao som de paisagens sonoras relaxantes, e desperte sentindo-se completamente renovado.","videoUrl":"https://www.youtube.com/watch?v=LXb3EKWsInQ","showVideo":true},"footerInfo":{"address":"Rua das Estrelas, 123\nCosmos, SP - 01234-567","phone":"(11) 91234-5678","email":"contato@nebula.inc","social":{"facebook":"#","instagram":"#","twitter":"#"}},"features":[{"title":"Projeções Hiper-realistas","description":"Nossa tecnologia patenteada mapeia constelações reais e nebulosas vibrantes, criando uma experiência imersiva única no seu teto."},{"title":"Paisagens Sonoras com IA","description":"Sincronizado com a projeção, o Nebula gera sons ambientes relaxantes que se adaptam ao seu ritmo de sono para uma noite perfeita."},{"title":"Controle Inteligente","description":"Use nosso aplicativo para escolher seu céu noturno, programar sessões de relaxamento e integrar com sua casa inteligente."}],"solutions":[{"imageUrl":"https://picsum.photos/600/400?random=6","title":"Sono Profundo e Restaurador","description":"Crie o ambiente perfeito para adormecer. As projeções calmantes e os sons adaptativos reduzem a ansiedade e promovem um sono mais profundo e reparador.","buttonText":"Melhore seu Sono"},{"imageUrl":"https://picsum.photos/600/400?random=7","title":"Foco para Meditação e Yoga","description":"Transforme qualquer cômodo em um santuário de paz. Use o Nebula para criar um cenário imersivo que aprofunda sua concentração e relaxamento durante a meditação.","buttonText":"Encontre sua Paz"},{"imageUrl":"https://picsum.photos/600/400?random=8","title":"Noites Mágicas para Crianças","description":"Estimule a imaginação dos seus filhos e acalme o medo do escuro. Uma galáxia no teto torna a hora de dormir uma aventura divertida e tranquila.","buttonText":"Encante Seus Filhos"}],"testimonials":[{"name":"Ana S.","role":"Designer de Interiores","quote":"O Nebula mudou completamente minha rotina de sono. Nunca me senti tão relaxada e inspirada ao acordar. É a peça central do meu quarto.","avatarUrl":"https://picsum.photos/100/100?random=2"},{"name":"Marcos P.","role":"Desenvolvedor de Software","quote":"É como ter um pedaço do universo no meu quarto. Me ajuda a desligar depois de um dia longo de codificação. Meus filhos também adoram!","avatarUrl":"https://picsum.photos/100/100?random=3"},{"name":"Juliana F.","role":"Professora de Yoga","quote":"Uso o Nebula durante minhas sessões de meditação em casa. A combinação das luzes e sons é simplesmente mágica. Recomendo a todos os meus alunos.","avatarUrl":"https://picsum.photos/100/100?random=4"}],"faq":[{"question":"Qual a diferença do Nebula para outros projetores de estrelas?","answer":"O Nebula utiliza projeção a laser de alta definição para mapear constelações reais e é o único com um sistema de som inteligente que se adapta ao seu ambiente e ritmo de sono para uma imersão completa."},{"question":"A instalação é complicada?","answer":"Não! Basta ligar o Nebula na tomada, conectá-lo ao Wi-Fi através do nosso aplicativo intuitivo e ele está pronto para usar. Leva menos de 5 minutos."},{"question":"Posso usar minhas próprias músicas ou playlists?","answer":"Sim! O Nebula funciona como uma caixa de som Bluetooth de alta qualidade. Você pode conectar seu celular e ouvir suas músicas, podcasts ou audiolivros favoritos sob as estrelas."},{"question":"Qual a política de garantia e devolução?","answer":"Oferecemos uma garantia de 1 ano contra defeitos de fabricação e uma política de devolução sem perguntas de 30 dias. Se você não amar seu Nebula, nós devolvemos o seu dinheiro."}],"cta":{"title":"Pronto Para Viajar Pelas Estrelas?","subtitle":"Receba seu Nebula em casa com frete grátis e transforme seu quarto no seu santuário pessoal. Garantia de 30 dias para devolução.","originalPrice":"R$ 1.199,00","discountedPrice":"R$ 899,00","buttonText":"Comprar Agora e Garantir o Seu"}};
+
+        try {
+            if (!firebase.apps.length) {
+              firebase.initializeApp(firebaseConfig);
+            }
+            const db = firebase.firestore();
+            const docRef = db.collection("content").doc("site");
+            setContentDocRef(docRef);
+
+            const fetchContent = async () => {
+              try {
+                const docSnap = await docRef.get();
+                if (docSnap.exists()) {
+                  setSiteData(docSnap.data());
+                } else {
+                  console.warn("Documento não encontrado no Firestore. Usando dados de fallback.");
+                  setSiteData(fallbackData);
+                }
+              } catch (e) {
+                console.error("Erro ao buscar dados do Firestore. Usando dados de fallback.", e);
+                setError("Não foi possível conectar ao banco de dados. Exibindo versão offline.");
+                setSiteData(fallbackData);
+              } finally {
+                setIsLoading(false);
+              }
+            };
+            fetchContent();
+        } catch (e) {
+            console.error("Erro ao inicializar o Firebase. Verifique sua configuração.", e);
+            setError("Configuração do Firebase inválida. Exibindo versão offline.");
+            setSiteData(fallbackData);
+            setIsLoading(false);
+        }
+
+      }, []);
 
       useEffect(() => {
         const handleHashChange = () => setRoute(window.location.hash);
@@ -570,24 +465,21 @@
         return () => window.removeEventListener('hashchange', handleHashChange);
       }, []);
 
-      const handleDataChange = (newData) => {
-        setSiteData(newData);
-      };
+      if (isLoading) return <div className="loader-container">Carregando Conteúdo...</div>;
+      if (!siteData) return <div className="loader-container">Erro ao carregar dados. {error}</div>;
       
       const { palette } = siteData;
-      const dynamicStyles = `
-          :root {
+      const dynamicStyles = `:root {
             --color-primary: ${palette.primary}; --color-accent: ${palette.accent};
             --color-background-dark: ${palette.backgroundDark}; --color-background-light: ${palette.backgroundLight};
             --color-text-primary: ${palette.textPrimary}; --color-text-secondary: ${palette.textSecondary};
-          }
-      `;
+      }`;
 
       return (
         <Fragment>
           <style>{dynamicStyles}</style>
           {route === '#/admin' ? (
-            <AdminDashboard data={siteData} onDataChange={handleDataChange} />
+            <AdminDashboard data={siteData} contentDocRef={contentDocRef} />
           ) : (
             <Fragment>
               <Header companyInfo={siteData.companyInfo} menuItems={siteData.menuItems} />
