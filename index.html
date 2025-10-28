@@ -388,6 +388,18 @@
                  ))}
               </fieldset>
 
+              <fieldset className="border border-gray-700 p-6 rounded-lg"><legend className="text-xl font-semibold px-2 text-indigo-400">Seção de Depoimentos</legend>
+                 {localData.testimonials.map((testimonial, index) => (
+                    <div key={index} className="space-y-4 border-b border-gray-800 pb-6 mb-6 last:border-b-0 last:mb-0 last:pb-0">
+                      <h3 className="text-lg font-medium text-gray-300">Depoimento {index + 1}</h3>
+                      <div><label className="block text-sm font-medium text-gray-400 mb-1">Nome</label><input type="text" value={testimonial.name} onChange={(e) => handleListItemChange('testimonials', index, 'name', e.target.value)} className={formInputClass}/></div>
+                      <div><label className="block text-sm font-medium text-gray-400 mb-1">Cargo/Função</label><input type="text" value={testimonial.role} onChange={(e) => handleListItemChange('testimonials', index, 'role', e.target.value)} className={formInputClass}/></div>
+                      <div><label className="block text-sm font-medium text-gray-400 mb-1">Depoimento</label><textarea value={testimonial.quote} onChange={(e) => handleListItemChange('testimonials', index, 'quote', e.target.value)} rows={3} className={formInputClass}/></div>
+                      <div><label className="block text-sm font-medium text-gray-400 mb-1">URL do Avatar</label><input type="text" value={testimonial.avatarUrl} onChange={(e) => handleListItemChange('testimonials', index, 'avatarUrl', e.target.value)} className={formInputClass}/></div>
+                    </div>
+                 ))}
+              </fieldset>
+
               <fieldset className="border border-gray-700 p-6 rounded-lg"><legend className="text-xl font-semibold px-2 text-indigo-400">Seção CTA (Call to Action)</legend><div className="space-y-4">
                   <div><label className="block text-sm font-medium text-gray-400 mb-1">Título</label><input type="text" value={localData.cta.title} onChange={(e) => handleInputChange('cta', 'title', e.target.value)} className={formInputClass} /></div>
                   <div><label className="block text-sm font-medium text-gray-400 mb-1">Subtítulo</label><input type="text" value={localData.cta.subtitle} onChange={(e) => handleInputChange('cta', 'subtitle', e.target.value)} className={formInputClass} /></div>
